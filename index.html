@@ -832,7 +832,6 @@
               id: 'naixiangxuehua',
               name: '奶香雪花',
               type: '斜切',
-              color: '#FF0000',
               points: [[190,90],[220,75],[255,73],[285,80],[305,100],[290,130],[265,147],[230,153],[200,145],[177,125]],
               labelPos: { x: 235, y: 110 }
             },
@@ -840,7 +839,6 @@
               id: 'ruanenshirou',
               name: '软嫩匙肉',
               type: '斜刀',
-              color: '#00FF00',
               points: [[160,140],[195,130],[227,137],[253,155],[260,183],[243,210],[213,222],[180,214],[157,189],[153,159]],
               labelPos: { x: 203, y: 175 }
             },
@@ -848,7 +846,6 @@
               id: 'tanyaxiongkouyou',
               name: '弹牙胸口油',
               type: '直刀',
-              color: '#0000FF',
               points: [[120,213],[160,200],[193,210],[215,235],[220,267],[201,297],[170,307],[138,297],[117,267],[113,240]],
               labelPos: { x: 163, y: 260 }
             },
@@ -856,7 +853,6 @@
               id: 'shuangcuisanhuazhi',
               name: '爽脆三花趾',
               type: '蝴蝶刀',
-              color: '#FFFF00',
               points: [[163,305],[197,295],[230,310],[245,337],[250,370],[233,395],[200,405],[168,397],[150,370],[147,340]],
               labelPos: { x: 198, y: 353 }
             },
@@ -864,7 +860,6 @@
               id: 'jinshuangshibing',
               name: '劲爽匙柄',
               type: '斜据',
-              color: '#FF00FF',
               points: [[217,233],[257,221],[293,233],[320,261],[326,295],[308,325],[274,335],[238,327],[215,298],[211,265]],
               labelPos: { x: 265, y: 280 }
             },
@@ -872,7 +867,6 @@
               id: 'xiantiandiaolong',
               name: '鲜甜吊龙',
               type: '吊据',
-              color: '#00FFFF',
               points: [[300,105],[343,91],[391,98],[430,117],[455,149],[460,185],[443,217],[407,235],[365,237],[325,223],[299,193],[293,153]],
               labelPos: { x: 377, y: 165 }
             },
@@ -880,7 +874,6 @@
               id: 'zhixiangfeipian',
               name: '脂香肥胼',
               type: '直刀',
-              color: '#FFA500',
               points: [[303,249],[349,235],[397,247],[435,273],[451,307],[449,343],[425,373],[383,387],[338,381],[303,355],[293,315],[297,281]],
               labelPos: { x: 373, y: 313 }
             },
@@ -888,7 +881,6 @@
               id: 'jingxuanenrou',
               name: '精选嫩肉',
               type: '推刀',
-              color: '#800080',
               points: [[433,133],[473,119],[515,133],[545,167],[553,205],[537,243],[499,267],[457,270],[423,249],[410,211],[410,173]],
               labelPos: { x: 481, y: 195 }
             },
@@ -896,7 +888,6 @@
               id: 'shuangkoushuangcengrou',
               name: '爽口双层肉',
               type: '直刀',
-              color: '#008000',
               points: [[430,280],[477,267],[522,285],[555,321],[563,363],[545,403],[503,423],[458,427],[423,405],[411,363],[415,321]],
               labelPos: { x: 485, y: 351 }
             },
@@ -904,7 +895,6 @@
               id: 'cuidanwuhuazhi',
               name: '脆弹五花趾',
               type: '蝴蝶刀',
-              color: '#FFC0CB',
               points: [[463,425],[508,411],[549,433],[573,473],[577,519],[555,559],[516,581],[473,583],[440,561],[428,519],[435,473]],
               labelPos: { x: 503, y: 503 }
             }
@@ -1159,28 +1149,13 @@
         }
 
         /**
-         * 处理点击事件 - 使用颜色蒙版进行像素级精确定位
+         * 处理点击事件
          * @param {number} x - 点击X坐标
          * @param {number} y - 点击Y坐标
          */
         handleClick(x, y) {
           const canvasPoint = this.screenToCanvas(x, y);
 
-          // 优先使用颜色蒙版检测（像素级精度）
-          if (this.maskCanvas && this.maskCtx) {
-            const part = this.detectPartByColor(canvasPoint.x, canvasPoint.y);
-            if (part) {
-              this.setHighlight(part.id);
-
-              setTimeout(() => {
-                window.location.href = `detail.html?part=${part.id}&name=${encodeURIComponent(part.name)}`;
-              }, 300);
-
-              return;
-            }
-          }
-
-          // 备用方案：多边形碰撞检测
           for (const part of this.partsData) {
             if (this.isPointInPolygon(canvasPoint.x, canvasPoint.y, part.points)) {
               this.setHighlight(part.id);
@@ -1192,33 +1167,6 @@
               return;
             }
           }
-        }
-
-        /**
-         * 通过颜色蒙版检测部位（像素级精确）
-         * @param {number} x - 原始图片X坐标
-         * @param {number} y - 原始图片Y坐标
-         * @returns {Object|null} 部位数据或null
-         */
-        detectPartByColor(x, y) {
-          if (!this.maskCtx || !this.maskCanvas) return null;
-
-          // 边界检查
-          if (x < 0 || x >= this.maskCanvas.width || y < 0 || y >= this.maskCanvas.height) {
-            return null;
-          }
-
-          // 获取该位置的颜色
-          const pixel = this.maskCtx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data;
-          const r = pixel[0];
-          const g = pixel[1];
-          const b = pixel[2];
-
-          // 将RGB转换为十六进制颜色值
-          const hexColor = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
-
-          // 查找对应的部位
-          return this.colorMap.get(hexColor) || null;
         }
 
         /**
