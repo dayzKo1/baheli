@@ -822,8 +822,7 @@
           this.lastX = 0;
           this.lastY = 0;
 
-          // 高亮状态
-          this.highlightedPart = null;
+
 
           // 部位数据定义（基于原始图片尺寸 540x480）
           // 使用精确的坐标点定义每个部位的边界
@@ -909,7 +908,6 @@
         init() {
           this.loadImage();
           this.setupEventListeners();
-          this.startAnimation();
         }
 
         /**
@@ -1158,8 +1156,6 @@
 
           for (const part of this.partsData) {
             if (this.isPointInPolygon(canvasPoint.x, canvasPoint.y, part.points)) {
-              this.setHighlight(part.id);
-
               setTimeout(() => {
                 window.location.href = `detail.html?part=${part.id}&name=${encodeURIComponent(part.name)}`;
               }, 300);
@@ -1203,29 +1199,6 @@
         }
 
         /**
-         * 设置高亮部位
-         * @param {string} partId - 部位ID
-         */
-        setHighlight(partId) {
-          this.highlightedPart = partId;
-          this.render();
-        }
-
-        /**
-         * 开始动画循环
-         */
-        startAnimation() {
-          const animate = () => {
-            this.animationFrame++;
-            if (this.highlightedPart) {
-              this.render();
-            }
-            requestAnimationFrame(animate);
-          };
-          animate();
-        }
-
-        /**
          * 主渲染函数
          */
         render() {
@@ -1245,14 +1218,6 @@
 
           // 绘制图片
           ctx.drawImage(this.image, 0, 0);
-
-          // 绘制高亮部位
-          if (this.highlightedPart) {
-            const part = this.partsData.find(p => p.id === this.highlightedPart);
-            if (part) {
-              this.drawHighlightedArea(part);
-            }
-          }
 
           // 绘制所有部位标签
           for (const part of this.partsData) {
