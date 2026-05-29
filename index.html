@@ -1327,6 +1327,9 @@
           const time = this.animationFrame * 0.05;
           const { x, y } = part.center;
           const radius = part.radius;
+          
+          // 调整高亮中心位置，稍微往上移动
+          const highlightY = y - 30;
 
           // 多层动画效果
           const pulse1 = (Math.sin(time) + 1) / 2;
@@ -1335,40 +1338,40 @@
 
           // 第一层：最外层发光光晕
           ctx.save();
-          const outerGlow = ctx.createRadialGradient(x, y, 0, x, y, radius * 2.5);
+          const outerGlow = ctx.createRadialGradient(x, highlightY, 0, x, highlightY, radius * 2.5);
           outerGlow.addColorStop(0, `rgba(255, 100, 50, ${0.3 + pulse1 * 0.2})`);
           outerGlow.addColorStop(0.5, `rgba(255, 150, 0, ${0.15 + pulse2 * 0.1})`);
           outerGlow.addColorStop(1, 'rgba(255, 87, 34, 0)');
           
           ctx.fillStyle = outerGlow;
           ctx.beginPath();
-          ctx.arc(x, y, radius * 2.5, 0, Math.PI * 2);
+          ctx.arc(x, highlightY, radius * 2.5, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
 
           // 第二层：主高亮圆形
           ctx.save();
-          const mainGlow = ctx.createRadialGradient(x, y, 0, x, y, radius * 1.5);
+          const mainGlow = ctx.createRadialGradient(x, highlightY, 0, x, highlightY, radius * 1.5);
           mainGlow.addColorStop(0, `rgba(255, 120, 60, ${0.6 + pulse1 * 0.15})`);
           mainGlow.addColorStop(0.6, `rgba(255, 140, 50, ${0.4 + pulse2 * 0.1})`);
           mainGlow.addColorStop(1, 'rgba(255, 100, 50, 0)');
           
           ctx.fillStyle = mainGlow;
           ctx.beginPath();
-          ctx.arc(x, y, radius * 1.5, 0, Math.PI * 2);
+          ctx.arc(x, highlightY, radius * 1.5, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
 
           // 第三层：核心高亮圆
           ctx.save();
-          const coreGlow = ctx.createRadialGradient(x, y, 0, x, y, radius);
+          const coreGlow = ctx.createRadialGradient(x, highlightY, 0, x, highlightY, radius);
           coreGlow.addColorStop(0, `rgba(255, 200, 150, ${0.8 + pulse1 * 0.15})`);
           coreGlow.addColorStop(0.5, `rgba(255, 160, 100, ${0.5 + pulse2 * 0.1})`);
           coreGlow.addColorStop(1, `rgba(255, 120, 60, ${0.3 + pulse3 * 0.1})`);
           
           ctx.fillStyle = coreGlow;
           ctx.beginPath();
-          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.arc(x, highlightY, radius, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
 
@@ -1381,20 +1384,20 @@
           ctx.shadowBlur = 15 + pulse1 * 10;
           
           ctx.beginPath();
-          ctx.arc(x, y, radius + 5 + pulse1 * 3, 0, Math.PI * 2);
+          ctx.arc(x, highlightY, radius + 5 + pulse1 * 3, 0, Math.PI * 2);
           ctx.stroke();
           ctx.restore();
 
           // 第五层：中心亮点
           ctx.save();
-          const centerGlow = ctx.createRadialGradient(x, y, 0, x, y, 20 + pulse1 * 10);
+          const centerGlow = ctx.createRadialGradient(x, highlightY, 0, x, highlightY, 20 + pulse1 * 10);
           centerGlow.addColorStop(0, `rgba(255, 255, 220, ${0.6 + pulse1 * 0.3})`);
           centerGlow.addColorStop(0.5, `rgba(255, 230, 180, ${0.3 + pulse2 * 0.15})`);
           centerGlow.addColorStop(1, 'rgba(255, 200, 150, 0)');
           
           ctx.fillStyle = centerGlow;
           ctx.beginPath();
-          ctx.arc(x, y, 20 + pulse1 * 10, 0, Math.PI * 2);
+          ctx.arc(x, highlightY, 20 + pulse1 * 10, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
 
