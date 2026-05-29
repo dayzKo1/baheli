@@ -440,7 +440,7 @@
       }
 
       .main-title {
-        font-size: 48px;
+        font-size: 40px;
         font-weight: bold;
         color: #2c1810;
         letter-spacing: 4px;
@@ -471,9 +471,111 @@
       .cow-container {
         position: relative;
         width: 100%;
-        max-width: 500px;
+        max-width: 600px;
         margin: 0 auto;
         padding: 20px 0;
+      }
+
+      /* Canvas容器样式 */
+      .canvas-wrapper {
+        position: relative;
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        background: #fafafa;
+      }
+
+      .cow-canvas {
+        display: block;
+        width: 100%;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .cow-canvas:active {
+        cursor: grabbing;
+      }
+
+      /* 控制按钮组 */
+      .canvas-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .zoom-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff5722, #ff9800);
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(255, 87, 34, 0.3);
+      }
+
+      .zoom-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(255, 87, 34, 0.5);
+      }
+
+      .zoom-btn:active {
+        transform: scale(0.95);
+      }
+
+      .zoom-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .zoom-level {
+        font-size: 14px;
+        font-weight: bold;
+        color: #555;
+        min-width: 60px;
+        text-align: center;
+      }
+
+      .reset-btn {
+        padding: 8px 18px;
+        border: none;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #4caf50, #8bc34a);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+      }
+
+      .reset-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+      }
+
+      /* 提示信息 */
+      .canvas-hint {
+        text-align: center;
+        font-size: 13px;
+        color: #888;
+        margin-top: 10px;
+        font-style: italic;
       }
     </style>
   </head>
