@@ -13,28 +13,32 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-      background: linear-gradient(135deg, #1a472a 0%, #2d5016 50%, #1a3a1a 100%);
+      background: #000;
       min-height: 100vh;
+      overflow: hidden;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-    
     }
 
-    .header {
-      width: 100%;
-      max-width: 450px;
-      text-align: center;
-      margin-bottom: 20px;
+    .main-image {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      display: block;
     }
 
     .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 12px 24px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 25px;
       color: #ffffff;
       font-size: 15px;
@@ -46,289 +50,37 @@
     }
 
     .back-btn:hover {
-      background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1));
+      background: rgba(255, 255, 255, 0.2);
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-
-    .back-btn:active {
-      transform: translateY(0);
-    }
-
-    .page-title {
-      color: #90EE90;
-      font-size: 28px;
-      font-weight: bold;
-      margin-top: 20px;
-      text-shadow: 0 2px 8px rgba(144,238,144,0.3);
-      letter-spacing: 2px;
-    }
-
-    .part-info {
-      margin-top: 10px;
-      color: rgba(255,255,255,0.7);
-      font-size: 14px;
-    }
-
-    .image-container {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-      background: #000;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow:
-        0 20px 60px rgba(0,0,0,0.5),
-        0 0 0 1px rgba(255,255,255,0.1),
-        inset 0 0 80px rgba(144,238,144,0.05);
-    }
-
-    .main-image {
-      width: 100%;
-      height: auto;
-      display: block;
-      transition: transform 0.3s ease;
-    }
-
-    .image-container:hover .main-image {
-      transform: scale(1.02);
-    }
-
-    .controls {
-      margin-top: 25px;
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .control-btn {
-      padding: 12px 28px;
-      border: none;
-      border-radius: 30px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .zoom-in-btn {
-      background: linear-gradient(135deg, #4CAF50, #45a049);
-      color: white;
-      box-shadow: 0 4px 15px rgba(76,175,80,0.4);
-    }
-
-    .zoom-in-btn:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 6px 20px rgba(76,175,80,0.6);
-    }
-
-    .download-btn {
-      background: linear-gradient(135deg, #FF9800, #F57C00);
-      color: white;
-      box-shadow: 0 4px 15px rgba(255,152,0,0.4);
-    }
-
-    .download-btn:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 6px 20px rgba(255,152,0,0.6);
-    }
-
-    .fullscreen-btn {
-      background: linear-gradient(135deg, #2196F3, #1976D2);
-      color: white;
-      box-shadow: 0 4px 15px rgba(33,150,243,0.4);
-    }
-
-    .fullscreen-btn:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 6px 20px rgba(33,150,243,0.6);
-    }
-
-    .info-section {
-      margin-top: 35px;
-      max-width: 450px;
-      width: 100%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 25px;
-      backdrop-filter: blur(10px);
-    }
-
-    .info-title {
-      color: #90EE90;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .info-title::before {
-      content: "📍";
-      font-size: 22px;
-    }
-
-    .info-content {
-      color: rgba(255,255,255,0.85);
-      line-height: 1.8;
-      font-size: 15px;
-    }
-
-    .feature-list {
-      list-style: none;
-      margin-top: 15px;
-    }
-
-    .feature-list li {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: rgba(255,255,255,0.9);
-      font-size: 14px;
-    }
-
-    .feature-list li:last-child {
-      border-bottom: none;
-    }
-
-    .feature-list li::before {
-      content: "✓";
-      color: #90EE90;
-      font-weight: bold;
-      font-size: 18px;
-    }
-
-    /* 全屏模式 */
-    .fullscreen-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.95);
-      z-index: 9999;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      cursor: zoom-out;
-    }
-
-    .fullscreen-overlay.active {
-      display: flex;
-    }
-
-    .fullscreen-image {
-      max-width: 95vw;
-      max-height: 95vh;
-      object-fit: contain;
-    }
-
-    .close-hint {
-      position: absolute;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,0.6);
-      font-size: 14px;
-      pointer-events: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     @media (max-width: 480px) {
-      body {
-        padding: 15px;
-      }
-
-      .page-title {
-        font-size: 24px;
-      }
-
-      .controls {
-        gap: 10px;
-      }
-
-      .control-btn {
-        padding: 10px 20px;
+      .back-btn {
+        top: 15px;
+        left: 15px;
+        padding: 10px 18px;
         font-size: 14px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <a href="index.html" class="back-btn">← 返回部位图</a>
-    <h1 class="page-title" id="pageTitle">八合里牛肉部位</h1>
-    <p class="part-info" id="partInfo">点击查看详情</p>
-  </div>
+  <a href="index.html" class="back-btn">← 返回部位图</a>
 
-  <div class="image-container">
-    <img
-      src="00.jpg"
-      alt="八合里主页设计"
-      class="main-image"
-      id="mainImage"
-    />
-  </div>
-
-  <div class="controls">
-    <button class="control-btn zoom-in-btn" onclick="openFullscreen()">
-      🔍 查看大图
-    </button>
-    <button class="control-btn download-btn" onclick="downloadImage()">
-      💾 保存图片
-    </button>
-  </div>
-
-  <div class="info-section">
-    <h2 class="info-title">页面说明</h2>
-    <div class="info-content">
-      <p>这是八合里牛肉火锅的主页设计稿，展示了品牌故事与产品特色的完美融合。</p>
-      
-      <ul class="feature-list">
-        <li>品牌Logo与视觉识别系统</li>
-        <li>"时间的旅行"主题文案</li>
-        <li>三段式内容卡片布局</li>
-        <li>沉浸式用户体验设计</li>
-        <li>底部导航交互组件</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- 全屏查看 -->
-  <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeFullscreen()">
-    <img
-      src="00.jpg"
-      alt="全屏查看"
-      class="fullscreen-image"
-    />
-    <p class="close-hint">点击任意位置关闭</p>
-  </div>
+  <img
+    src="00.jpg"
+    alt="八合里主页设计"
+    class="main-image"
+    id="mainImage"
+  />
 
   <script>
     /**
-     * 获取URL参数
-     * @returns {Object} 参数对象
-     */
-    function getUrlParams() {
-      const params = new URLSearchParams(window.location.search);
-      return {
-        part: params.get('part'),
-        name: params.get('name')
-      };
-    }
-
-    /**
-     * 初始化页面信息
+     * 获取URL参数并设置页面标题
      */
     function initPageInfo() {
-      const params = getUrlParams();
+      const params = new URLSearchParams(window.location.search);
       const partNames = {
         'naixiangxuehua': '奶香雪花',
         'ruanenshirou': '软嫩匙肉',
@@ -342,56 +94,12 @@
         'cuidanwuhuazhi': '脆弹五花趾'
       };
 
-      if (params.part && partNames[params.part]) {
-        document.getElementById('pageTitle').textContent = partNames[params.part];
-        document.getElementById('partInfo').textContent = `部位详情 · ${partNames[params.part]}`;
-        document.title = `${partNames[params.part]} - 八合里`;
+      const part = params.get('part');
+      if (part && partNames[part]) {
+        document.title = `${partNames[part]} - 八合里`;
       }
     }
 
-    /**
-     * 打开全屏模式
-     */
-    function openFullscreen() {
-      document.getElementById('fullscreenOverlay').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    /**
-     * 关闭全屏模式
-     */
-    function closeFullscreen() {
-      document.getElementById('fullscreenOverlay').classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    /**
-     * 下载图片
-     */
-    function downloadImage() {
-      const link = document.createElement('a');
-      link.download = '八合里主页设计.jpg';
-      link.href = '00.jpg';
-      link.click();
-    }
-
-    /**
-     * 键盘事件监听
-     */
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeFullscreen();
-      }
-      if (e.key === 'Enter' || e.key === ' ') {
-        if (document.getElementById('fullscreenOverlay').classList.contains('active')) {
-          closeFullscreen();
-        } else {
-          openFullscreen();
-        }
-      }
-    });
-
-    // 页面加载完成后初始化
     window.addEventListener('DOMContentLoaded', initPageInfo);
   </script>
 </body>
