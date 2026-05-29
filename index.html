@@ -827,77 +827,83 @@
           this.animationFrame = 0;
 
           // 部位数据定义（基于用户提供的精确标注点坐标）
-          // 每个部位包含中心点坐标和自动生成的多边形区域
+          // 图片原始尺寸：1625 x 1110
+          // 用户标注时的图片尺寸约为：812 x 555（原始尺寸的一半）
+          // 因此需要将坐标乘以2来适配原始图片尺寸
+          this.originalImageWidth = 1625;
+          this.originalImageHeight = 1110;
+          this.coordScale = 2; // 坐标缩放比例
+          
           this.partsData = [
             {
               id: 'tanyaxiongkouyou',
               name: '弹牙胸口油',
               type: '直刀',
-              center: { x: 265, y: 451 },
-              radius: 50
+              center: { x: 265 * 2, y: 451 * 2 },
+              radius: 60
             },
             {
               id: 'ruanenshirou',
               name: '软嫩匙肉',
               type: '斜刀',
-              center: { x: 338, y: 301 },
-              radius: 50
+              center: { x: 338 * 2, y: 301 * 2 },
+              radius: 60
             },
             {
               id: 'naixiangxuehua',
               name: '奶香雪花',
               type: '斜切',
-              center: { x: 351, y: 180 },
-              radius: 50
+              center: { x: 351 * 2, y: 180 * 2 },
+              radius: 60
             },
             {
               id: 'shuangcuisanhuazhi',
               name: '爽脆三花趾',
               type: '蝴蝶刀',
-              center: { x: 363, y: 566 },
-              radius: 50
+              center: { x: 363 * 2, y: 566 * 2 },
+              radius: 60
             },
             {
               id: 'jinshuangshibing',
               name: '劲爽匙柄',
               type: '斜据',
-              center: { x: 393, y: 432 },
-              radius: 50
+              center: { x: 393 * 2, y: 432 * 2 },
+              radius: 60
             },
             {
               id: 'xiantiandiaolong',
               name: '鲜甜吊龙',
               type: '吊据',
-              center: { x: 532, y: 191 },
-              radius: 50
+              center: { x: 532 * 2, y: 191 * 2 },
+              radius: 60
             },
             {
               id: 'zhixiangfeipian',
               name: '脂香肥胼',
               type: '直刀',
-              center: { x: 550, y: 390 },
-              radius: 50
+              center: { x: 550 * 2, y: 390 * 2 },
+              radius: 60
             },
             {
               id: 'jingxuanenrou',
               name: '精选嫩肉',
               type: '推刀',
-              center: { x: 775, y: 220 },
-              radius: 50
+              center: { x: 775 * 2, y: 220 * 2 },
+              radius: 60
             },
             {
               id: 'shuangkoushuangcengrou',
               name: '爽口双层肉',
               type: '直刀',
-              center: { x: 790, y: 350 },
-              radius: 50
+              center: { x: 790 * 2, y: 350 * 2 },
+              radius: 60
             },
             {
               id: 'cuidanwuhuazhi',
               name: '脆弹五花趾',
               type: '蝴蝶刀',
-              center: { x: 806, y: 473 },
-              radius: 50
+              center: { x: 806 * 2, y: 473 * 2 },
+              radius: 60
             }
           ];
 
@@ -1210,6 +1216,34 @@
 
           // 绘制图片
           ctx.drawImage(this.image, 0, 0);
+
+          // 调试：绘制所有部位的中心点（红色小圆点）
+          ctx.save();
+          for (const part of this.partsData) {
+            ctx.beginPath();
+            ctx.arc(part.center.x, part.center.y, 5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
+            ctx.fill();
+            
+            // 绘制部位名称
+            ctx.font = '12px Arial';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.textAlign = 'center';
+            ctx.fillText(part.name, part.center.x, part.center.y - 10);
+          }
+          ctx.restore();
+          
+          // 调试：显示图片尺寸信息
+          ctx.save();
+          ctx.font = '14px Arial';
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.fillRect(5, 5, 200, 60);
+          ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+          ctx.textAlign = 'left';
+          ctx.fillText(`图片尺寸: ${this.image.width}x${this.image.height}`, 10, 20);
+          ctx.fillText(`Canvas: ${this.canvas.width}x${this.canvas.height}`, 10, 38);
+          ctx.fillText(`缩放: ${this.scale.toFixed(2)}`, 10, 56);
+          ctx.restore();
 
           // 绘制高亮部位
           if (this.highlightedPart) {
