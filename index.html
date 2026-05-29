@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>非遺鮮切牛肉</title>
+    <!-- 引入特色字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        background: #fff;
+        padding: 20px;
+        max-width: 500px;
+        margin: 0 auto;
+        min-height: 100vh;
+      }
+
+      .cow-image {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* SVG覆盖层容器 */
+      .cow-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      /* 部位区域样式 */
+      .part-area {
+        fill: rgba(255, 87, 34, 0);
+        stroke: rgba(255, 87, 34, 0);
+        stroke-width: 2;
+        transition: all 0.4s ease;
+        cursor: pointer;
+        pointer-events: auto;
+        filter: drop-shadow(0 0 0px transparent);
+      }
+
+      .part-area.highlighted {
+        fill: url(#highlightGradient);
+        stroke: #ff5722;
+        stroke-width: 3.5;
+        stroke-linejoin: round;
+        animation: areaPulse 2s ease-in-out infinite, areaGlow 3s ease-in-out infinite, areaRotate 8s linear infinite;
+        filter: drop-shadow(0 0 20px rgba(255, 87, 34, 0.7))
+                drop-shadow(0 0 40px rgba(255, 152, 0, 0.4));
+        opacity: 0.9;
+      }
+
+      @keyframes areaPulse {
+        0%, 100% {
+          opacity: 0.85;
+          stroke-width: 3;
+          filter: drop-shadow(0 0 15px rgba(255, 87, 34, 0.6));
+        }
+        50% {
+          opacity: 1;
+          stroke-width: 4;
+          filter: drop-shadow(0 0 25px rgba(255, 87, 34, 0.9));
+        }
+      }
+
+      @keyframes areaGlow {
+        0%, 100% {
+          filter: drop-shadow(0 0 15px rgba(255, 87, 34, 0.6))
+                  drop-shadow(0 0 8px rgba(255, 152, 0, 0.4));
+        }
+        50% {
+          filter: drop-shadow(0 0 25px rgba(255, 87, 34, 0.9))
+                  drop-shadow(0 0 12px rgba(255, 152, 0, 0.6));
+        }
+      }
+
+      @keyframes areaRotate {
+        0% {
+          transform-origin: center;
+          transform: scale(1) rotate(0deg);
+        }
+        25% {
+          transform-origin: center;
+          transform: scale(1.01) rotate(0.5deg);
+        }
+        50% {
+          transform-origin: center;
+          transform: scale(1) rotate(0deg);
+        }
+        75% {
+          transform-origin: center;
+          transform: scale(1.01) rotate(-0.5deg);
+        }
+        100% {
+          transform-origin: center;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      /* 部位标签 */
+      .part-label {
+        position: absolute;
+        text-align: center;
+        transition: all 0.4s ease;
+        pointer-events: none;
+        z-index: 10;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: transparent;
+      }
+
+      .part-type {
+        display: block;
+        font-size: 11px;
+        font-weight: bold;
+        color: #d32f2f;
+        margin-bottom: 1px;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+      }
+
+      .part-name {
+        display: block;
+        font-size: 12px;
+        color: #4a4a4a;
+        white-space: nowrap;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+      }
+
+      .part-label.highlighted {
+        transform: scale(1.15);
+        z-index: 20;
+        background: linear-gradient(135deg,
+          rgba(255, 87, 34, 0.95) 0%,
+          rgba(255, 152, 0, 0.95) 100%);
+        box-shadow:
+          0 8px 24px rgba(255, 87, 34, 0.5),
+          0 4px 12px rgba(0, 0, 0, 0.2),
+          inset 0 2px 4px rgba(255, 255, 255, 0.3);
+        animation: labelFloat 3s ease-in-out infinite;
+      }
+
+      .part-label.highlighted .part-type,
+      .part-label.highlighted .part-name {
+        color: #ffffff;
+        font-weight: bold;
+        text-shadow:
+          0 2px 4px rgba(0, 0, 0, 0.3),
+          0 1px 2px rgba(255, 255, 255, 0.5);
+        letter-spacing: 0.5px;
+      }
+
+      @keyframes labelFloat {
+        0%, 100% {
+          transform: scale(1.15) translateY(0);
+          box-shadow:
+            0 8px 24px rgba(255, 87, 34, 0.5),
+            0 4px 12px rgba(0, 0, 0, 0.2),
+            inset 0 2px 4px rgba(255, 255, 255, 0.3);
+        }
+        50% {
+          transform: scale(1.18) translateY(-3px);
+          box-shadow:
+            0 12px 32px rgba(255, 87, 34, 0.7),
+            0 6px 16px rgba(0, 0, 0, 0.3),
+            inset 0 2px 4px rgba(255, 255, 255, 0.4);
+        }
+      }
+
+      /* 覆盖文字层 - 完全覆盖原图文字 */
+      .part-overlay-text {
+        position: absolute;
+        z-index: 25;
+        text-align: center;
+        padding: 10px 18px;
+        border-radius: 12px;
+        background: linear-gradient(135deg,
+          rgba(220, 38, 38, 0.98) 0%,
+          rgba(234, 88, 12, 0.98) 50%,
+          rgba(220, 38, 38, 0.98) 100%);
+        box-shadow:
+          0 10px 35px rgba(220, 38, 38, 0.6),
+          0 5px 15px rgba(0, 0, 0, 0.3),
+          0 0 0 3px rgba(255, 255, 255, 0.2),
+          inset 0 2px 4px rgba(255, 255, 255, 0.4);
+        opacity: 0;
+        transform: scale(0.5) translateY(10px);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        pointer-events: none;
+        min-width: 80px;
+      }
+
+      .part-overlay-text.visible {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        animation: overlayPulse 2.5s ease-in-out infinite;
+      }
+
+      @keyframes overlayPulse {
+        0%, 100% {
+          box-shadow:
+            0 10px 35px rgba(220, 38, 38, 0.6),
+            0 5px 15px rgba(0, 0, 0, 0.3),
+            0 0 0 3px rgba(255, 255, 255, 0.2),
+            inset 0 2px 4px rgba(255, 255, 255, 0.4);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow:
+            0 14px 45px rgba(220, 38, 38, 0.8),
+            0 7px 20px rgba(0, 0, 0, 0.4),
+            0 0 0 4px rgba(255, 255, 255, 0.3),
+            inset 0 2px 4px rgba(255, 255, 255, 0.5);
+          transform: scale(1.05);
+        }
+      }
+
+      .overlay-type {
+        display: block;
+        font-size: 13px;
+        font-weight: bold;
+        color: #fef3c7;
+        margin-bottom: 3px;
+        letter-spacing: 1px;
+        text-shadow:
+          0 2px 4px rgba(0, 0, 0, 0.4),
+          0 1px 2px rgba(255, 200, 100, 0.3);
+      }
+
+      .overlay-name {
+        display: block;
+        font-size: 15px;
+        font-weight: bold;
+        color: #ffffff;
+        white-space: nowrap;
+        letter-spacing: 1.5px;
+        text-shadow:
+          0 2px 6px rgba(0, 0, 0, 0.5),
+          0 1px 3px rgba(255, 255, 255, 0.4);
+      }
+
+      /* 部位位置 - 与SVG区域中心对齐（优化后）*/
+      .part-1 {
+        top: 16%;
+        left: 43%;
+      } /* 奶香雪花 - 肩颈 */
+      .part-2 {
+        top: 28%;
+        left: 35%;
+      } /* 软嫩匙肉 - 上脑 */
+      .part-3 {
+        top: 51%;
+        left: 42%;
+      } /* 劲爽匙柄 - 里脊 */
+      .part-4 {
+        top: 50%;
+        left: 25%;
+      } /* 弹牙胸口油 - 胸口 */
+      .part-5 {
+        top: 71%;
+        left: 32%;
+      } /* 爽脆三花趾 - 前腿 */
+      .part-6 {
+        top: 26%;
+        left: 59%;
+      } /* 鲜甜吊龙 - 外脊 */
+      .part-7 {
+        top: 55%;
+        left: 56%;
+      } /* 脂香肥胼 - 五花 */
+      .part-8 {
+        top: 33%;
+        left: 79%;
+      } /* 精选嫩肉 - 后臀 */
+      .part-9 {
+        top: 57%;
+        left: 79%;
+      } /* 爽口双层肉 - 后腿上部 */
+      .part-10 {
+        top: 81%;
+        left: 77%;
+      } /* 脆弹五花趾 - 后腿下部 */
+
+      /* 开场动画样式 */
+      .splash-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(135deg, #1a0f0f 0%, #2d1810 25%, #4a2820 50%, #6b3830 75%, #8b4035 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.8s ease-out;
+        overflow: hidden;
+      }
+
+      .splash-screen::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at center, rgba(255, 200, 150, 0.08) 0%, rgba(180, 120, 80, 0.05) 30%, transparent 60%);
+        animation: rotateGlow 10s linear infinite;
+      }
+
+      @keyframes rotateGlow {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .splash-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .splash-logo-container {
+        position: relative;
+        width: 320px;
+        height: 320px;
+        animation: logoAppear 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        transform: scale(0);
+        z-index: 2;
+      }
+
+      @keyframes logoAppear {
+        0% {
+          transform: scale(0) rotate(-180deg);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.1) rotate(10deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      .splash-logo-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5)) drop-shadow(0 0 60px rgba(255, 140, 0, 0.3));
+        animation: logoGlow 2s ease-in-out infinite;
+      }
+
+      @keyframes logoGlow {
+        0%, 100% {
+          filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5)) drop-shadow(0 0 60px rgba(255, 140, 0, 0.3));
+        }
+        50% {
+          filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 80px rgba(255, 140, 0, 0.5));
+        }
+      }
+
+      .splash-welcome-text {
+        position: relative;
+        z-index: 2;
+        opacity: 0;
+        animation: welcomeTextFadeIn 1s ease-out 0.3s forwards;
+      }
+
+      .splash-welcome-svg {
+        width: 380px;
+        height: 100px;
+        filter: drop-shadow(0 4px 12px rgba(255, 215, 0, 0.8));
+      }
+
+      @keyframes welcomeTextFadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-30px) scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* 装饰粒子 */
+      .splash-particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+        border-radius: 50%;
+        animation: particleFloat 3s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes particleFloat {
+        0%, 100% {
+          transform: translateY(0) scale(1);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateY(-20px) scale(1.5);
+          opacity: 1;
+        }
+      }
+
+      .main-content {
+        opacity: 0;
+        transition: opacity 0.6s ease-in;
+      }
+
+      .main-content.visible {
+        opacity: 1;
+      }
+
+      /* 上方文案区域 */
+      .content-section {
+        padding: 40px 20px 30px;
+        text-align: center;
+      }
+
+      .main-title {
+        font-size: 48px;
+        font-weight: bold;
+        color: #2c1810;
+        letter-spacing: 4px;
+        line-height: 1.3;
+        margin-bottom: 15px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .main-subtitle {
+        font-size: 26px;
+        color: #8b4513;
+        font-weight: 600;
+        letter-spacing: 2px;
+        margin-bottom: 25px;
+      }
+
+      .main-description {
+        font-size: 16px;
+        color: #555;
+        line-height: 2;
+        max-width: 400px;
+        margin: 0 auto;
+        text-align: justify;
+        text-indent: 2em;
+      }
+
+      /* 下方部位图区域 */
+      .cow-container {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 开场动画 -->
+    <div class="splash-screen" id="splashScreen">
+      <!-- 装饰粒子 -->
+      <div class="splash-particle" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
+      <div class="splash-particle" style="top: 25%; left: 75%; animation-delay: 0.5s;"></div>
+      <div class="splash-particle" style="top: 70%; left: 15%; animation-delay: 1s;"></div>
+      <div class="splash-particle" style="top: 80%; left: 80%; animation-delay: 1.5s;"></div>
+      <div class="splash-particle" style="top: 40%; left: 10%; animation-delay: 2s;"></div>
+      <div class="splash-particle" style="top: 60%; left: 90%; animation-delay: 2.5s;"></div>
+
+      <!-- 拱形欢迎文字（在Logo上方） -->
+      <div class="splash-welcome-text">
+        <svg class="splash-welcome-svg" viewBox="0 0 380 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <path id="welcomeArc" d="M 30 80 Q 190 -20 350 80" fill="none"/>
+            <linearGradient id="welcomeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color: #FFD700; stop-opacity: 1" />
+              <stop offset="25%" style="stop-color: #FFF59D; stop-opacity: 1" />
+              <stop offset="50%" style="stop-color: #FFEB3B; stop-opacity: 1" />
+              <stop offset="75%" style="stop-color: #FFF59D; stop-opacity: 1" />
+              <stop offset="100%" style="stop-color: #FFD700; stop-opacity: 1" />
+            </linearGradient>
+          </defs>
+          <text
+            font-family="'Ma Shan Zheng', 'ZCOOL KuaiLe', cursive"
+            font-size="38"
+            font-weight="bold"
+            fill="url(#welcomeGradient)"
+            letter-spacing="14"
+            stroke="rgba(139, 0, 0, 0.3)"
+            stroke-width="0.5"
+          >
+            <textPath href="#welcomeArc" startOffset="50%" text-anchor="middle">
+              八合里欢迎您
+            </textPath>
+          </text>
+        </svg>
+      </div>
+
+      <div class="splash-logo-container">
+        <!-- 八合里Logo图片 -->
+        <img
+          src="八合里logo.png"
+          alt="八合里Logo"
+          class="splash-logo-image"
+        />
+      </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content" id="mainContent">
+      <!-- 上方文案区域 -->
+      <div class="content-section">
+        <h1 class="main-title">非遗鲜切牛肉</h1>
+        <h2 class="main-subtitle">十种部位十种口感</h2>
+        <p class="main-description">
+          八合里开创了"十种部位十种刀工，十种口味"的创新牛肉切法，在分部位吃法基础上加入创新刀工，丰富了牛肉的多层口感。
+        </p>
+      </div>
+
+      <!-- 下方部位图区域 -->
+      <div class="cow-container">
+        <!-- 牛的图片底图 -->
+        <img
+          src="部位图.png"
+          alt="牛肉部位图"
+          class="cow-image"
+        />
+
+        <!-- SVG覆盖层 - 精确部位区域 -->
+        <svg class="cow-overlay" viewBox="0 0 540 480" preserveAspectRatio="xMidYMid meet">
+          <!-- 定义高亮渐变 -->
+          <defs>
+            <linearGradient id="highlightGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:rgba(255,87,34,0.85);stop-opacity:1" />
+              <stop offset="50%" style="stop-color:rgba(255,152,0,0.80);stop-opacity:1" />
+              <stop offset="100%" style="stop-color:rgba(255,87,34,0.85);stop-opacity:1" />
+            </linearGradient>
+
+            <!-- 发光滤镜 -->
+            <filter id="glowFilter">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- 1. 奶香雪花 - 上方偏左（肩颈区域）-->
+          <polygon class="part-area" data-part="naixiangxuehua"
+            points="175,78 198,62 235,60 268,68 285,85 278,112 256,130 223,136 190,128 168,112"/>
+
+          <!-- 2. 软嫩匙肉 - 中间偏左上（上脑区域）-->
+          <polygon class="part-area" data-part="ruanenshirou"
+            points="148,125 185,114 218,122 245,140 250,168 233,195 202,206 165,198 143,172 139,146"/>
+
+          <!-- 3. 弹牙胸口油 - 左侧中间（胸口区域）-->
+          <polygon class="part-area" data-part="tanyaxiongkouyou"
+            points="110,195 148,182 182,190 204,215 208,248 189,278 157,288 125,278 105,248 101,220"/>
+
+          <!-- 4. 爽脆三花趾 - 左下（前腿区域）-->
+          <polygon class="part-area" data-part="shuangcuisanhuazhi"
+            points="152,285 188,276 220,290 236,318 240,350 222,375 190,386 158,378 141,352 138,321"/>
+
+          <!-- 5. 劲爽匙柄 - 中间偏左（里脊区域）-->
+          <polygon class="part-area" data-part="jinshuangshibing"
+            points="205,212 245,200 283,211 308,239 314,273 296,303 262,313 227,305 205,276 201,243"/>
+
+          <!-- 6. 鲜甜吊龙 - 中上偏右（外脊区域）-->
+          <polygon class="part-area" data-part="xiantiandiaolong"
+            points="285,92 328,78 377,85 417,103 442,135 448,170 432,201 394,218 352,221 312,207 286,176 280,138"/>
+
+          <!-- 7. 脂香肥胼 - 中间（五花区域）-->
+          <polygon class="part-area" data-part="zhixiangfeipian"
+            points="288,228 334,214 382,225 420,250 436,284 434,320 409,349 367,363 322,357 288,330 278,291 282,257"/>
+
+          <!-- 8. 精选嫩肉 - 右上（后臀区域）-->
+          <polygon class="part-area" data-part="jingxuanenrou"
+            points="418,115 459,101 502,115 531,148 539,186 523,225 485,248 442,251 408,230 395,192 395,154"/>
+
+          <!-- 9. 爽口双层肉 - 右中（后腿上部）-->
+          <polygon class="part-area" data-part="shuangkoushuangcengrou"
+            points="416,258 463,244 508,262 540,298 548,340 530,380 488,400 443,403 409,382 397,340 401,298"/>
+
+          <!-- 10. 脆弹五花趾 - 右下（后腿下部）-->
+          <polygon class="part-area" data-part="cuidanwuhuazhi"
+            points="450,402 495,388 536,410 560,450 564,496 542,536 503,557 460,560 428,538 416,496 422,450"/>
+        </svg>
+
+        <!-- 部位标签 -->
+        <div class="part-label part-1" data-part="naixiangxuehua">
+          <span class="part-type">斜切</span>
+          <span class="part-name">奶香雪花</span>
+        </div>
+
+        <div class="part-label part-2" data-part="ruanenshirou">
+          <span class="part-type">斜刀</span>
+          <span class="part-name">软嫩匙肉</span>
+        </div>
+
+        <div class="part-label part-3" data-part="jinshuangshibing">
+          <span class="part-type">斜据</span>
+          <span class="part-name">劲爽匙柄</span>
+        </div>
+
+        <div class="part-label part-4" data-part="tanyaxiongkouyou">
+          <span class="part-type">直刀</span>
+          <span class="part-name">弹牙胸口油</span>
+        </div>
+
+        <div class="part-label part-5" data-part="shuangcuisanhuazhi">
+          <span class="part-type">蝴蝶刀</span>
+          <span class="part-name">爽脆三花趾</span>
+        </div>
+
+        <div class="part-label part-6" data-part="xiantiandiaolong">
+          <span class="part-type">吊据</span>
+          <span class="part-name">鲜甜吊龙</span>
+        </div>
+
+        <div class="part-label part-7" data-part="zhixiangfeipian">
+          <span class="part-type">直刀</span>
+          <span class="part-name">脂香肥胼</span>
+        </div>
+
+        <div class="part-label part-8" data-part="jingxuanenrou">
+          <span class="part-type">推刀</span>
+          <span class="part-name">精选嫩肉</span>
+        </div>
+
+        <div class="part-label part-9" data-part="shuangkoushuangcengrou">
+          <span class="part-type">直刀</span>
+          <span class="part-name">爽口双层肉</span>
+        </div>
+
+        <div class="part-label part-10" data-part="cuidanwuhuazhi">
+          <span class="part-type">蝴蝶刀</span>
+          <span class="part-name">脆弹五花趾</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /**
+       * 播放开场动画
+       * @returns {void}
+       */
+      function playSplashAnimation() {
+        const splashScreen = document.getElementById('splashScreen');
+        const mainContent = document.getElementById('mainContent');
+
+        setTimeout(function() {
+          splashScreen.classList.add('fade-out');
+          mainContent.classList.add('visible');
+
+          setTimeout(function() {
+            splashScreen.style.display = 'none';
+          }, 800);
+        }, 2800);
+      }
+
+      /**
+       * 获取URL参数并高亮对应部位
+       * @returns {void}
+       */
+      function highlightPartFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const part = urlParams.get("part");
+
+        if (part) {
+          // 高亮SVG区域
+          const svgArea = document.querySelector(`.part-area[data-part="${part}"]`);
+          if (svgArea) {
+            svgArea.classList.add("highlighted");
+          }
+
+          // 高亮标签
+          const label = document.querySelector(`.part-label[data-part="${part}"]`);
+          if (label) {
+            label.classList.add("highlighted");
+            // 创建覆盖文字层
+            createOverlayText(label, part);
+          }
+        }
+      }
+
+      /**
+       * 创建覆盖文字层，完全覆盖原图上的文字
+       * @param {HTMLElement} originalLabel - 原始标签元素
+       * @param {string} partName - 部位名称
+       * @returns {void}
+       */
+      function createOverlayText(originalLabel, partName) {
+        const container = document.querySelector('.cow-container');
+        const overlay = document.createElement('div');
+        overlay.className = 'part-overlay-text';
+        overlay.setAttribute('data-part', partName);
+
+        // 获取原始标签的位置和内容
+        const rect = originalLabel.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const typeEl = originalLabel.querySelector('.part-type');
+        const nameEl = originalLabel.querySelector('.part-name');
+
+        // 计算相对位置
+        const top = ((rect.top - containerRect.top) / containerRect.height) * 100;
+        const left = ((rect.left - containerRect.left) / containerRect.width) * 100;
+
+        overlay.style.top = `${top}%`;
+        overlay.style.left = `${left}%`;
+        overlay.innerHTML = `
+          <span class="overlay-type">${typeEl ? typeEl.textContent : ''}</span>
+          <span class="overlay-name">${nameEl ? nameEl.textContent : ''}</span>
+        `;
+
+        container.appendChild(overlay);
+
+        // 延迟显示动画
+        setTimeout(() => {
+          overlay.classList.add('visible');
+        }, 100);
+      }
+
+      /**
+       * 页面加载完成后初始化动画和高亮效果
+       */
+      document.addEventListener("DOMContentLoaded", function () {
+        playSplashAnimation();
+        highlightPartFromURL();
+      });
+    </script>
+  </body>
+</html>
