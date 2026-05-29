@@ -822,7 +822,9 @@
           this.lastX = 0;
           this.lastY = 0;
 
-
+          // 高亮状态
+          this.highlightedPart = null;
+          this.animationFrame = 0;
 
           // 部位数据定义（基于原始图片尺寸 540x480）
           // 使用精确的坐标点定义每个部位的边界
@@ -908,6 +910,8 @@
         init() {
           this.loadImage();
           this.setupEventListeners();
+          this.startAnimation();
+          this.checkUrlParams();
         }
 
         /**
