@@ -1377,12 +1377,12 @@
           
           // 计算透明度（淡入淡出效果）
           let alpha;
-          if (progress < 0.2) {
+          if (progress < 0.15) {
             // 淡入
-            alpha = progress / 0.2;
-          } else if (progress > 0.8) {
+            alpha = progress / 0.15;
+          } else if (progress > 0.85) {
             // 淡出
-            alpha = (1 - progress) / 0.2;
+            alpha = (1 - progress) / 0.15;
           } else {
             // 完全显示
             alpha = 1;
@@ -1390,41 +1390,66 @@
           
           ctx.save();
           
-          // 半透明背景
-          ctx.fillStyle = `rgba(0, 0, 0, ${0.7 * alpha})`;
+          // 渐变背景
+          const bgGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(this.canvas.width, this.canvas.height));
+          bgGradient.addColorStop(0, `rgba(40, 20, 15, ${0.85 * alpha})`);
+          bgGradient.addColorStop(0.5, `rgba(60, 30, 20, ${0.9 * alpha})`);
+          bgGradient.addColorStop(1, `rgba(80, 40, 25, ${0.95 * alpha})`);
+          ctx.fillStyle = bgGradient;
           ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
           
+          // 绘制装饰圆环
+          ctx.strokeStyle = `rgba(255, 140, 66, ${0.3 * alpha})`;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 150, 0, Math.PI * 2);
+          ctx.stroke();
+          
+          ctx.strokeStyle = `rgba(255, 140, 66, ${0.2 * alpha})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 180, 0, Math.PI * 2);
+          ctx.stroke();
+          
           // 绘制部位名称
-          ctx.font = 'bold 48px Arial, "PingFang SC", sans-serif';
+          ctx.font = 'bold 52px Arial, "PingFang SC", sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-          ctx.shadowColor = `rgba(255, 100, 50, ${0.8 * alpha})`;
-          ctx.shadowBlur = 20;
-          ctx.fillText(part.name, centerX, centerY - 30);
+          ctx.shadowColor = `rgba(255, 140, 66, ${1 * alpha})`;
+          ctx.shadowBlur = 25;
+          ctx.fillText(part.name, centerX, centerY - 25);
+          
+          // 绘制分隔线
+          ctx.strokeStyle = `rgba(255, 200, 150, ${0.8 * alpha})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(centerX - 80, centerY + 15);
+          ctx.lineTo(centerX + 80, centerY + 15);
+          ctx.stroke();
           
           // 绘制刀工类型
-          ctx.font = 'bold 28px Arial, "PingFang SC", sans-serif';
-          ctx.fillStyle = `rgba(255, 200, 150, ${alpha})`;
-          ctx.shadowColor = `rgba(255, 150, 100, ${0.6 * alpha})`;
-          ctx.shadowBlur = 15;
-          ctx.fillText(part.type, centerX, centerY + 40);
+          ctx.font = 'bold 26px Arial, "PingFang SC", sans-serif';
+          ctx.fillStyle = `rgba(255, 220, 180, ${alpha})`;
+          ctx.shadowColor = `rgba(255, 150, 100, ${0.7 * alpha})`;
+          ctx.shadowBlur = 18;
+          ctx.fillText(part.type, centerX, centerY + 55);
           
           // 绘制装饰线
-          ctx.strokeStyle = `rgba(255, 150, 100, ${alpha})`;
+          ctx.strokeStyle = `rgba(255, 140, 66, ${0.6 * alpha})`;
           ctx.lineWidth = 2;
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 12;
           
           // 上方装饰线
           ctx.beginPath();
-          ctx.moveTo(centerX - 100, centerY - 80);
-          ctx.lineTo(centerX + 100, centerY - 80);
+          ctx.moveTo(centerX - 120, centerY - 85);
+          ctx.lineTo(centerX + 120, centerY - 85);
           ctx.stroke();
           
           // 下方装饰线
           ctx.beginPath();
-          ctx.moveTo(centerX - 100, centerY + 90);
-          ctx.lineTo(centerX + 100, centerY + 90);
+          ctx.moveTo(centerX - 120, centerY + 100);
+          ctx.lineTo(centerX + 120, centerY + 100);
           ctx.stroke();
           
           ctx.restore();
