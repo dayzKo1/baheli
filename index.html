@@ -24,7 +24,7 @@
           "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
         background: url('bg.png') no-repeat center center fixed;
         background-size: cover;
-        padding: 20px;
+        padding: 0;
         max-width: none;
         margin: 0 auto;
         min-height: 100vh;
@@ -490,8 +490,8 @@
         width: 100%;
         height: auto;
         overflow: hidden;
-        border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        border-radius: 0;
+        box-shadow: none;
         background: rgba(255, 255, 255, 0.95);
       }
 
@@ -507,17 +507,14 @@
         cursor: grabbing;
       }
 
-      /* 控制按钮组 */
+      /* 控制按钮组 - 已隐藏 */
       .canvas-controls {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        margin-top: 15px;
-        padding: 10px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 25px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: none;
+      }
+
+      /* 提示信息 - 已隐藏 */
+      .canvas-hint {
+        display: none;
       }
 
       .zoom-btn {
@@ -645,8 +642,8 @@
         .canvas-wrapper {
           width: 100%;
           height: 100%;
-          border-radius: 16px;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+          border-radius: 0;
+          box-shadow: none;
           overflow: hidden;
         }
 
@@ -702,8 +699,8 @@
         }
 
         .canvas-wrapper {
-          border-radius: 12px 12px 0 0;
-          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+          border-radius: 0;
+          box-shadow: none;
         }
       }
     </style>
