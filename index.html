@@ -436,10 +436,11 @@
 
       /* 上方文案区域 */
       .content-section {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         right: 0;
+        height: 50vh;
         z-index: 10;
         padding: 20px 15px;
         text-align: center;
@@ -449,6 +450,10 @@
         margin: 0;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         transition: opacity 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
 
       .main-title {
@@ -482,14 +487,14 @@
 
       /* 下方部位图区域 */
       .cow-container {
-        position: relative;
+        position: fixed;
+        bottom: 0;
+        left: 0;
         width: 100vw;
-        height: 100vh;
+        height: 50vh;
         max-width: 100%;
         margin: 0;
         padding: 0;
-        left: 0;
-        transform: none;
       }
 
       /* Canvas容器样式 */
@@ -959,17 +964,20 @@
             canvasWidth = window.innerWidth;
             canvasHeight = canvasWidth / aspectRatio;
           } else {
-            // 竖屏模式：根据图片宽高比计算Canvas尺寸
-            // 让Canvas适配屏幕，同时保持图片完整显示
-            const screenAspect = window.innerWidth / window.innerHeight;
+            // 竖屏模式：Canvas容器高度为50vh
+            const containerHeight = window.innerHeight * 0.5;
+            const containerWidth = window.innerWidth;
             
-            if (screenAspect > aspectRatio) {
-              // 屏幕更宽，以高度为准
-              canvasHeight = window.innerHeight;
+            // 根据图片宽高比计算Canvas尺寸，确保图片完整显示
+            const containerAspect = containerWidth / containerHeight;
+            
+            if (containerAspect > aspectRatio) {
+              // 容器更宽，以高度为准
+              canvasHeight = containerHeight;
               canvasWidth = canvasHeight * aspectRatio;
             } else {
-              // 屏幕更高，以宽度为准
-              canvasWidth = window.innerWidth;
+              // 容器更高，以宽度为准
+              canvasWidth = containerWidth;
               canvasHeight = canvasWidth / aspectRatio;
             }
           }
@@ -1221,34 +1229,6 @@
           // 绘制图片
           ctx.drawImage(this.image, 0, 0);
 
-          // 调试：绘制所有部位的中心点（红色小圆点）
-          ctx.save();
-          for (const part of this.partsData) {
-            ctx.beginPath();
-            ctx.arc(part.center.x, part.center.y, 5, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
-            ctx.fill();
-            
-            // 绘制部位名称
-            ctx.font = '12px Arial';
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-            ctx.textAlign = 'center';
-            ctx.fillText(part.name, part.center.x, part.center.y - 10);
-          }
-          ctx.restore();
-          
-          // 调试：显示图片尺寸信息
-          ctx.save();
-          ctx.font = '14px Arial';
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-          ctx.fillRect(5, 5, 200, 60);
-          ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-          ctx.textAlign = 'left';
-          ctx.fillText(`图片尺寸: ${this.image.width}x${this.image.height}`, 10, 20);
-          ctx.fillText(`Canvas: ${this.canvas.width}x${this.canvas.height}`, 10, 38);
-          ctx.fillText(`缩放: ${this.scale.toFixed(2)}`, 10, 56);
-          ctx.restore();
-
           // 绘制高亮部位
           if (this.highlightedPart) {
             const part = this.partsData.find(p => p.id === this.highlightedPart);
@@ -1285,10 +1265,57 @@
           if (partId) {
             const part = this.partsData.find(p => p.id === partId);
             if (part) {
-              this.highlightedPart = partId;
-              this.render();
+              // 先显示完整图片2秒，然后缓慢放大到对应部位
+              setTimeout(() => {
+                this.zoomToPart(part);
+              }, 2000);
             }
           }
+        }
+
+        /**
+         * 缓慢放大到指定部位
+         * @param {Object} part - 部位数据
+         */
+        zoomToPart(part) {
+          const targetScale = 2.5; // 目标缩放比例
+          const duration = 1500; // 动画持续时间（毫秒）
+          const startTime = Date.now();
+          const startScale = this.scale;
+          const startOffsetX = this.offsetX;
+          const startOffsetY = this.offsetY;
+          
+          // 计算目标位置（让部位中心位于Canvas中心）
+          const targetOffsetX = this.canvas.width / 2 - part.center.x * targetScale;
+          const targetOffsetY = this.canvas.height / 2 - part.center.y * targetScale;
+          
+          const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // 使用缓动函数（easeInOutCubic）
+            const easeProgress = progress < 0.5
+              ? 4 * progress * progress * progress
+              : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+            
+            // 插值计算当前缩放和位置
+            this.scale = startScale + (targetScale - startScale) * easeProgress;
+            this.offsetX = startOffsetX + (targetOffsetX - startOffsetX) * easeProgress;
+            this.offsetY = startOffsetY + (targetOffsetY - startOffsetY) * easeProgress;
+            
+            this.updateZoomDisplay();
+            this.render();
+            
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              // 动画完成后设置高亮
+              this.highlightedPart = part.id;
+              this.render();
+            }
+          };
+          
+          animate();
         }
 
         /**
