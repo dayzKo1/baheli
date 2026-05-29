@@ -436,59 +436,69 @@
 
       /* 上方文案区域 */
       .content-section {
-        padding: 40px 20px 30px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        padding: 20px 15px;
         text-align: center;
-        background: rgba(255, 255, 255, 0.85);
+        background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
-        border-radius: 16px;
-        margin: 0 15px;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        border-radius: 0;
+        margin: 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: opacity 0.3s ease;
       }
 
       .main-title {
-        font-size: 40px;
+        font-size: 28px;
         font-weight: bold;
         color: #2c1810;
-        letter-spacing: 4px;
-        line-height: 1.3;
-        margin-bottom: 15px;
+        letter-spacing: 3px;
+        line-height: 1.2;
+        margin-bottom: 10px;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
       .main-subtitle {
-        font-size: 26px;
+        font-size: 18px;
         color: #8b4513;
         font-weight: 600;
-        letter-spacing: 2px;
-        margin-bottom: 25px;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
       }
 
       .main-description {
-        font-size: 16px;
+        font-size: 13px;
         color: #555;
-        line-height: 2;
-        max-width: 400px;
+        line-height: 1.6;
+        max-width: 100%;
         margin: 0 auto;
         text-align: justify;
         text-indent: 2em;
+        display: none;
       }
 
       /* 下方部位图区域 */
       .cow-container {
         position: relative;
         width: 100vw;
+        height: 100vh;
         max-width: 100%;
         margin: 0;
         padding: 0;
-        left: 50%;
-        transform: translateX(-50%);
+        left: 0;
+        transform: none;
       }
 
       /* Canvas容器样式 */
       .canvas-wrapper {
-        position: relative;
-        width: 100%;
-        height: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
         overflow: hidden;
         border-radius: 0;
         box-shadow: none;
@@ -498,7 +508,7 @@
       .cow-canvas {
         display: block;
         width: 100%;
-        height: auto;
+        height: 100%;
         cursor: grab;
         touch-action: none;
       }
@@ -814,12 +824,6 @@
 
           // 高亮状态
           this.highlightedPart = null;
-          this.animationFrame = 0;
-
-          // 颜色蒙版系统 - 像素级精确定位
-          this.maskCanvas = null;
-          this.maskCtx = null;
-          this.colorMap = new Map();
 
           // 部位数据定义（基于原始图片尺寸 540x480）
           // 使用精确的坐标点定义每个部位的边界
@@ -925,43 +929,11 @@
           this.image = new Image();
           this.image.onload = () => {
             this.imageLoaded = true;
-            this.createColorMask();
             this.resizeCanvas();
             this.centerView();
             this.render();
           };
           this.image.src = '部位图.png';
-        }
-
-        /**
-         * 创建颜色蒙版 - 用于像素级精确定位
-         */
-        createColorMask() {
-          if (!this.image) return;
-
-          // 创建离屏Canvas作为蒙版
-          this.maskCanvas = document.createElement('canvas');
-          this.maskCanvas.width = this.image.width;
-          this.maskCanvas.height = this.image.height;
-          this.maskCtx = this.maskCanvas.getContext('2d');
-
-          // 清空蒙版
-          this.maskCtx.clearRect(0, 0, this.maskCanvas.width, this.maskCanvas.height);
-
-          // 为每个部位绘制不同颜色的区域
-          for (const part of this.partsData) {
-            this.maskCtx.beginPath();
-            this.maskCtx.moveTo(part.points[0][0], part.points[0][1]);
-            for (let i = 1; i < part.points.length; i++) {
-              this.maskCtx.lineTo(part.points[i][0], part.points[i][1]);
-            }
-            this.maskCtx.closePath();
-            this.maskCtx.fillStyle = part.color;
-            this.maskCtx.fill();
-
-            // 建立颜色到部位的映射
-            this.colorMap.set(part.color.toUpperCase(), part);
-          }
         }
 
         /**
@@ -991,10 +963,9 @@
             canvasWidth = window.innerWidth;
             canvasHeight = canvasWidth / aspectRatio;
           } else {
-            // 竖屏模式：使用容器宽度（100vw）
-            const wrapper = this.canvas.parentElement || document.body;
-            canvasWidth = wrapper.clientWidth || window.innerWidth;
-            canvasHeight = canvasWidth / aspectRatio;
+            // 竖屏模式：Canvas占满整个屏幕
+            canvasWidth = window.innerWidth;
+            canvasHeight = window.innerHeight;
           }
 
           this.canvas.width = Math.max(canvasWidth, 320);
@@ -1006,12 +977,27 @@
          */
         centerView() {
           if (this.image && this.canvas.width > 0) {
-            this.scale = Math.min(
-              this.canvas.width / this.image.width,
-              this.canvas.height / this.image.height
-            );
-            this.offsetX = (this.canvas.width - this.image.width * this.scale) / 2;
-            this.offsetY = (this.canvas.height - this.image.height * this.scale) / 2;
+            const isLandscape = window.innerWidth > window.innerHeight;
+            
+            if (!isLandscape) {
+              // 竖屏模式：让图片填满或适配屏幕
+              const scaleX = this.canvas.width / this.image.width;
+              const scaleY = this.canvas.height / this.image.height;
+              this.scale = Math.max(scaleX, scaleY);  // 使用更大的比例确保填满
+              
+              // 居中计算
+              this.offsetX = (this.canvas.width - this.image.width * this.scale) / 2;
+              this.offsetY = (this.canvas.height - this.image.height * this.scale) / 2;
+            } else {
+              // 横屏模式：保持原有的适配逻辑
+              this.scale = Math.min(
+                this.canvas.width / this.image.width,
+                this.canvas.height / this.image.height
+              );
+              this.offsetX = (this.canvas.width - this.image.width * this.scale) / 2;
+              this.offsetY = (this.canvas.height - this.image.height * this.scale) / 2;
+            }
+            
             this.updateZoomDisplay();
           }
         }
