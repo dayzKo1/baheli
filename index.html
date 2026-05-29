@@ -1574,28 +1574,29 @@
           const { x, y } = part.center;
 
           // 标签尺寸
-          const width = 120;
-          const height = 65;
+          const width = 140;
+          const height = 75;
           const labelX = x - width / 2;
           const labelY = y - height / 2 - 120; // 调整为120，让标签显示在更高位置
 
           // 第一层：外发光阴影
           ctx.save();
-          ctx.shadowColor = `rgba(220, 50, 50, ${0.8 + pulse1 * 0.2})`;
-          ctx.shadowBlur = 25 + pulse1 * 15;
+          ctx.shadowColor = `rgba(255, 100, 50, ${0.9 + pulse1 * 0.1})`;
+          ctx.shadowBlur = 30 + pulse1 * 20;
           ctx.shadowOffsetX = 0;
-          ctx.shadowOffsetY = 5 + pulse1 * 3;
+          ctx.shadowOffsetY = 8 + pulse1 * 4;
 
           // 背景渐变
           const bgGradient = ctx.createLinearGradient(labelX, labelY - 10, labelX + width, labelY + height + 10);
-          bgGradient.addColorStop(0, `rgba(200, 40, 40, ${0.95 + pulse1 * 0.03})`);
-          bgGradient.addColorStop(0.35, `rgba(230, 80, 20, ${0.94 + pulse2 * 0.04})`);
-          bgGradient.addColorStop(0.65, `rgba(240, 100, 30, ${0.93 + pulse3 * 0.05})`);
-          bgGradient.addColorStop(1, `rgba(200, 50, 50, ${0.95 + pulse1 * 0.03})`);
+          bgGradient.addColorStop(0, `rgba(220, 60, 30, ${0.96 + pulse1 * 0.02})`);
+          bgGradient.addColorStop(0.3, `rgba(255, 100, 40, ${0.95 + pulse2 * 0.03})`);
+          bgGradient.addColorStop(0.5, `rgba(255, 120, 50, ${0.94 + pulse3 * 0.04})`);
+          bgGradient.addColorStop(0.7, `rgba(255, 100, 40, ${0.95 + pulse2 * 0.03})`);
+          bgGradient.addColorStop(1, `rgba(220, 60, 30, ${0.96 + pulse1 * 0.02})`);
 
           // 圆角矩形背景
           ctx.beginPath();
-          ctx.roundRect(labelX, labelY, width, height, 15);
+          ctx.roundRect(labelX, labelY, width, height, 18);
           ctx.fillStyle = bgGradient;
           ctx.fill();
           ctx.restore();
@@ -1603,15 +1604,15 @@
           // 第二层：边框高光
           ctx.save();
           ctx.beginPath();
-          ctx.roundRect(labelX, labelY, width, height, 15);
+          ctx.roundRect(labelX, labelY, width, height, 18);
 
           const borderGradient = ctx.createLinearGradient(labelX, labelY, labelX + width, labelY + height);
-          borderGradient.addColorStop(0, `rgba(255, 230, 200, ${0.7 + pulse1 * 0.2})`);
-          borderGradient.addColorStop(0.5, `rgba(255, 255, 240, ${0.9 + pulse2 * 0.1})`);
-          borderGradient.addColorStop(1, `rgba(255, 220, 180, ${0.7 + pulse1 * 0.2})`);
+          borderGradient.addColorStop(0, `rgba(255, 240, 220, ${0.8 + pulse1 * 0.15})`);
+          borderGradient.addColorStop(0.5, `rgba(255, 255, 250, ${0.95 + pulse2 * 0.05})`);
+          borderGradient.addColorStop(1, `rgba(255, 230, 200, ${0.8 + pulse1 * 0.15})`);
 
           ctx.strokeStyle = borderGradient;
-          ctx.lineWidth = 3 + pulse1 * 1.5;
+          ctx.lineWidth = 3.5 + pulse1 * 2;
           ctx.lineJoin = 'round';
           ctx.stroke();
           ctx.restore();
@@ -1619,10 +1620,10 @@
           // 第三层：内部光泽效果
           ctx.save();
           ctx.beginPath();
-          ctx.roundRect(labelX + 5, labelY + 5, width - 10, height / 2 - 3, [12, 12, 0, 0]);
+          ctx.roundRect(labelX + 6, labelY + 6, width - 12, height / 2 - 4, [14, 14, 0, 0]);
 
           const shineGradient = ctx.createLinearGradient(labelX, labelY, labelX, labelY + height / 2);
-          shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+          shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
           shineGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
           ctx.fillStyle = shineGradient;
@@ -1632,28 +1633,36 @@
           // 第四层：文字绘制
           ctx.save();
 
-          // 刀工类型文字
-          ctx.font = `bold ${16 + pulse1 * 1.5}px Arial, "PingFang SC", sans-serif`;
+          // 刀工类型文字（上方小字）
+          ctx.font = `bold ${15 + pulse1 * 1}px Arial, "PingFang SC", sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
 
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+          ctx.shadowBlur = 4;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+
+          ctx.fillStyle = 'rgba(255, 248, 220, 0.95)';
+          ctx.fillText(part.type, x, labelY + height / 2 - 14);
+
+          // 分隔线
+          ctx.beginPath();
+          ctx.moveTo(x - 35, labelY + height / 2 - 2);
+          ctx.lineTo(x + 35, labelY + height / 2 - 2);
+          ctx.strokeStyle = 'rgba(255, 240, 200, 0.6)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // 部位名称文字（下方大字）
+          ctx.font = `bold ${20 + pulse1 * 2}px Arial, "PingFang SC", sans-serif`;
           ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
           ctx.shadowBlur = 5;
           ctx.shadowOffsetX = 1;
           ctx.shadowOffsetY = 1;
 
-          ctx.fillStyle = '#FFF8DC';
-          ctx.fillText(part.type, x, labelY + height / 2 - 12);
-
-          // 部位名称文字
-          ctx.font = `bold ${18 + pulse1 * 2}px Arial, "PingFang SC", sans-serif`;
-          ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-          ctx.shadowBlur = 6;
-          ctx.shadowOffsetX = 1;
-          ctx.shadowOffsetY = 1;
-
           ctx.fillStyle = '#FFFFFF';
-          ctx.fillText(part.name, x, labelY + height / 2 + 14);
+          ctx.fillText(part.name, x, labelY + height / 2 + 16);
 
           ctx.restore();
 
