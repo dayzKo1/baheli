@@ -1265,12 +1265,135 @@
           if (partId) {
             const part = this.partsData.find(p => p.id === partId);
             if (part) {
-              // 先显示完整图片2秒，然后缓慢放大到对应部位
+              // 先显示完整图片1秒，然后显示报幕，最后缓慢放大到对应部位
               setTimeout(() => {
-                this.zoomToPart(part);
-              }, 2000);
+                this.showIntro(part);
+              }, 1000);
             }
           }
+        }
+
+        /**
+         * 显示部位介绍报幕
+         * @param {Object} part - 部位数据
+         */
+        showIntro(part) {
+          const duration = 2000; // 报幕显示时间（毫秒）
+          const startTime = Date.now();
+          
+          const showIntroAnimation = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // 渲染图片和报幕
+            this.renderWithIntro(part, progress);
+            
+            if (progress < 1) {
+              requestAnimationFrame(showIntroAnimation);
+            } else {
+              // 报幕结束后开始缩放动画
+              setTimeout(() => {
+                this.zoomToPart(part);
+              }, 500);
+            }
+          };
+          
+          showIntroAnimation();
+        }
+
+        /**
+         * 渲染图片和报幕
+         * @param {Object} part - 部位数据
+         * @param {number} progress - 进度（0-1）
+         */
+        renderWithIntro(part, progress) {
+          if (!this.imageLoaded || !this.ctx) return;
+
+          const ctx = this.ctx;
+          
+          // 清空画布
+          ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // 保存当前状态
+          ctx.save();
+
+          // 应用变换
+          ctx.translate(this.offsetX, this.offsetY);
+          ctx.scale(this.scale, this.scale);
+
+          // 绘制图片
+          ctx.drawImage(this.image, 0, 0);
+
+          // 恢复状态
+          ctx.restore();
+
+          // 绘制报幕
+          this.drawIntroOverlay(part, progress);
+        }
+
+        /**
+         * 绘制报幕覆盖层
+         * @param {Object} part - 部位数据
+         * @param {number} progress - 进度（0-1）
+         */
+        drawIntroOverlay(part, progress) {
+          const ctx = this.ctx;
+          const centerX = this.canvas.width / 2;
+          const centerY = this.canvas.height / 2;
+          
+          // 计算透明度（淡入淡出效果）
+          let alpha;
+          if (progress < 0.2) {
+            // 淡入
+            alpha = progress / 0.2;
+          } else if (progress > 0.8) {
+            // 淡出
+            alpha = (1 - progress) / 0.2;
+          } else {
+            // 完全显示
+            alpha = 1;
+          }
+          
+          ctx.save();
+          
+          // 半透明背景
+          ctx.fillStyle = `rgba(0, 0, 0, ${0.7 * alpha})`;
+          ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+          
+          // 绘制部位名称
+          ctx.font = 'bold 48px Arial, "PingFang SC", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.shadowColor = `rgba(255, 100, 50, ${0.8 * alpha})`;
+          ctx.shadowBlur = 20;
+          ctx.fillText(part.name, centerX, centerY - 30);
+          
+          // 绘制刀工类型
+          ctx.font = 'bold 28px Arial, "PingFang SC", sans-serif';
+          ctx.fillStyle = `rgba(255, 200, 150, ${alpha})`;
+          ctx.shadowColor = `rgba(255, 150, 100, ${0.6 * alpha})`;
+          ctx.shadowBlur = 15;
+          ctx.fillText(part.type, centerX, centerY + 40);
+          
+          // 绘制装饰线
+          ctx.strokeStyle = `rgba(255, 150, 100, ${alpha})`;
+          ctx.lineWidth = 2;
+          ctx.shadowBlur = 10;
+          
+          // 上方装饰线
+          ctx.beginPath();
+          ctx.moveTo(centerX - 100, centerY - 80);
+          ctx.lineTo(centerX + 100, centerY - 80);
+          ctx.stroke();
+          
+          // 下方装饰线
+          ctx.beginPath();
+          ctx.moveTo(centerX - 100, centerY + 90);
+          ctx.lineTo(centerX + 100, centerY + 90);
+          ctx.stroke();
+          
+          ctx.restore();
         }
 
         /**
