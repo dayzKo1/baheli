@@ -826,78 +826,78 @@
           this.highlightedPart = null;
           this.animationFrame = 0;
 
-          // 部位数据定义（基于原始图片尺寸 540x480）
-          // 使用精确的坐标点定义每个部位的边界
+          // 部位数据定义（基于用户提供的精确标注点坐标）
+          // 每个部位包含中心点坐标和自动生成的多边形区域
           this.partsData = [
             {
-              id: 'naixiangxuehua',
-              name: '奶香雪花',
-              type: '斜切',
-              points: [[190,90],[220,75],[255,73],[285,80],[305,100],[290,130],[265,147],[230,153],[200,145],[177,125]],
-              labelPos: { x: 235, y: 110 }
+              id: 'tanyaxiongkouyou',
+              name: '弹牙胸口油',
+              type: '直刀',
+              center: { x: 265, y: 451 },
+              radius: 50
             },
             {
               id: 'ruanenshirou',
               name: '软嫩匙肉',
               type: '斜刀',
-              points: [[160,140],[195,130],[227,137],[253,155],[260,183],[243,210],[213,222],[180,214],[157,189],[153,159]],
-              labelPos: { x: 203, y: 175 }
+              center: { x: 338, y: 301 },
+              radius: 50
             },
             {
-              id: 'tanyaxiongkouyou',
-              name: '弹牙胸口油',
-              type: '直刀',
-              points: [[120,213],[160,200],[193,210],[215,235],[220,267],[201,297],[170,307],[138,297],[117,267],[113,240]],
-              labelPos: { x: 163, y: 260 }
+              id: 'naixiangxuehua',
+              name: '奶香雪花',
+              type: '斜切',
+              center: { x: 351, y: 180 },
+              radius: 50
             },
             {
               id: 'shuangcuisanhuazhi',
               name: '爽脆三花趾',
               type: '蝴蝶刀',
-              points: [[163,305],[197,295],[230,310],[245,337],[250,370],[233,395],[200,405],[168,397],[150,370],[147,340]],
-              labelPos: { x: 198, y: 353 }
+              center: { x: 363, y: 566 },
+              radius: 50
             },
             {
               id: 'jinshuangshibing',
               name: '劲爽匙柄',
               type: '斜据',
-              points: [[217,233],[257,221],[293,233],[320,261],[326,295],[308,325],[274,335],[238,327],[215,298],[211,265]],
-              labelPos: { x: 265, y: 280 }
+              center: { x: 393, y: 432 },
+              radius: 50
             },
             {
               id: 'xiantiandiaolong',
               name: '鲜甜吊龙',
               type: '吊据',
-              points: [[300,105],[343,91],[391,98],[430,117],[455,149],[460,185],[443,217],[407,235],[365,237],[325,223],[299,193],[293,153]],
-              labelPos: { x: 377, y: 165 }
+              center: { x: 532, y: 191 },
+              radius: 50
             },
             {
               id: 'zhixiangfeipian',
               name: '脂香肥胼',
               type: '直刀',
-              points: [[303,249],[349,235],[397,247],[435,273],[451,307],[449,343],[425,373],[383,387],[338,381],[303,355],[293,315],[297,281]],
-              labelPos: { x: 373, y: 313 }
+              center: { x: 550, y: 390 },
+              radius: 50
             },
             {
               id: 'jingxuanenrou',
               name: '精选嫩肉',
               type: '推刀',
-              points: [[433,133],[473,119],[515,133],[545,167],[553,205],[537,243],[499,267],[457,270],[423,249],[410,211],[410,173]],
-              labelPos: { x: 481, y: 195 }
+              center: { x: 775, y: 220 },
+              radius: 50
             },
             {
               id: 'shuangkoushuangcengrou',
               name: '爽口双层肉',
               type: '直刀',
-              points: [[430,280],[477,267],[522,285],[555,321],[563,363],[545,403],[503,423],[458,427],[423,405],[411,363],[415,321]],
-              labelPos: { x: 485, y: 351 }
+              center: { x: 790, y: 350 },
+              radius: 50
             },
             {
               id: 'cuidanwuhuazhi',
               name: '脆弹五花趾',
               type: '蝴蝶刀',
-              points: [[463,425],[508,411],[549,433],[573,473],[577,519],[555,559],[516,581],[473,583],[440,561],[428,519],[435,473]],
-              labelPos: { x: 503, y: 503 }
+              center: { x: 806, y: 473 },
+              radius: 50
             }
           ];
 
@@ -1159,10 +1159,18 @@
           const canvasPoint = this.screenToCanvas(x, y);
 
           for (const part of this.partsData) {
-            if (this.isPointInPolygon(canvasPoint.x, canvasPoint.y, part.points)) {
+            const distance = Math.sqrt(
+              Math.pow(canvasPoint.x - part.center.x, 2) +
+              Math.pow(canvasPoint.y - part.center.y, 2)
+            );
+
+            if (distance <= part.radius) {
+              this.highlightedPart = part.id;
+              this.render();
+
               setTimeout(() => {
                 window.location.href = `detail.html?part=${part.id}&name=${encodeURIComponent(part.name)}`;
-              }, 300);
+              }, 500);
 
               return;
             }
@@ -1180,26 +1188,6 @@
             x: (screenX - this.offsetX) / this.scale,
             y: (screenY - this.offsetY) / this.scale
           };
-        }
-
-        /**
-         * 判断点是否在多边形内
-         * @param {number} x - 点的X坐标
-         * @param {number} y - 点的Y坐标
-         * @param {Array} polygon - 多边形顶点数组
-         * @returns {boolean} 是否在多边形内
-         */
-        isPointInPolygon(x, y, polygon) {
-          let inside = false;
-          for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-            const xi = polygon[i][0], yi = polygon[i][1];
-            const xj = polygon[j][0], yj = polygon[j][1];
-            
-            if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
-              inside = !inside;
-            }
-          }
-          return inside;
         }
 
         /**
@@ -1223,13 +1211,46 @@
           // 绘制图片
           ctx.drawImage(this.image, 0, 0);
 
-          // 绘制所有部位标签
-          for (const part of this.partsData) {
-            this.drawLabel(part);
+          // 绘制高亮部位
+          if (this.highlightedPart) {
+            const part = this.partsData.find(p => p.id === this.highlightedPart);
+            if (part) {
+              this.drawHighlightedArea(part);
+            }
           }
 
           // 恢复状态
           ctx.restore();
+        }
+
+        /**
+         * 开始动画循环
+         */
+        startAnimation() {
+          const animate = () => {
+            this.animationFrame++;
+            if (this.highlightedPart) {
+              this.render();
+            }
+            requestAnimationFrame(animate);
+          };
+          animate();
+        }
+
+        /**
+         * 检查URL参数并设置高亮
+         */
+        checkUrlParams() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const partId = urlParams.get('part');
+          
+          if (partId) {
+            const part = this.partsData.find(p => p.id === partId);
+            if (part) {
+              this.highlightedPart = partId;
+              this.render();
+            }
+          }
         }
 
         /**
@@ -1238,161 +1259,82 @@
          */
         drawHighlightedArea(part) {
           const ctx = this.ctx;
-          const time = this.animationFrame * 0.03;
+          const time = this.animationFrame * 0.05;
+          const { x, y } = part.center;
+          const radius = part.radius;
 
           // 多层动画效果
           const pulse1 = (Math.sin(time) + 1) / 2;
           const pulse2 = (Math.sin(time * 1.5 + 1) + 1) / 2;
           const pulse3 = (Math.sin(time * 0.8 + 2) + 1) / 2;
 
-          // 计算边界框
-          const minX = Math.min(...part.points.map(p => p[0]));
-          const minY = Math.min(...part.points.map(p => p[1]));
-          const maxX = Math.max(...part.points.map(p => p[0]));
-          const maxY = Math.max(...part.points.map(p => p[1]));
-          const centerX = (minX + maxX) / 2;
-          const centerY = (minY + maxY) / 2;
-
-          // 第一层：外发光光晕（最大范围）
+          // 第一层：最外层发光光晕
           ctx.save();
+          const outerGlow = ctx.createRadialGradient(x, y, 0, x, y, radius * 2.5);
+          outerGlow.addColorStop(0, `rgba(255, 100, 50, ${0.3 + pulse1 * 0.2})`);
+          outerGlow.addColorStop(0.5, `rgba(255, 150, 0, ${0.15 + pulse2 * 0.1})`);
+          outerGlow.addColorStop(1, 'rgba(255, 87, 34, 0)');
+          
+          ctx.fillStyle = outerGlow;
           ctx.beginPath();
-          this.drawPolygonPath(part.points);
-          ctx.closePath();
-
-          // 径向渐变光晕
-          const glowGradient = ctx.createRadialGradient(
-            centerX, centerY, 0,
-            centerX, centerY, Math.max(maxX - minX, maxY - minY)
-          );
-          glowGradient.addColorStop(0, `rgba(255, 100, 50, ${0.4 + pulse1 * 0.3})`);
-          glowGradient.addColorStop(0.5, `rgba(255, 150, 0, ${0.25 + pulse2 * 0.15})`);
-          glowGradient.addColorStop(1, 'rgba(255, 87, 34, 0)');
-
-          ctx.fillStyle = glowGradient;
-          ctx.shadowColor = `rgba(255, 100, 50, ${0.7 + pulse1 * 0.3})`;
-          ctx.shadowBlur = 30 + pulse1 * 20;
+          ctx.arc(x, y, radius * 2.5, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
 
-          // 第二层：主填充渐变
+          // 第二层：主高亮圆形
           ctx.save();
+          const mainGlow = ctx.createRadialGradient(x, y, 0, x, y, radius * 1.5);
+          mainGlow.addColorStop(0, `rgba(255, 120, 60, ${0.6 + pulse1 * 0.15})`);
+          mainGlow.addColorStop(0.6, `rgba(255, 140, 50, ${0.4 + pulse2 * 0.1})`);
+          mainGlow.addColorStop(1, 'rgba(255, 100, 50, 0)');
+          
+          ctx.fillStyle = mainGlow;
           ctx.beginPath();
-          this.drawPolygonPath(part.points);
-          ctx.closePath();
-
-          const fillGradient = ctx.createLinearGradient(minX, minY, maxX, maxY);
-          fillGradient.addColorStop(0, `rgba(255, 120, 60, ${0.75 + pulse1 * 0.12})`);
-          fillGradient.addColorStop(0.4, `rgba(255, 160, 50, ${0.70 + pulse2 * 0.12})`);
-          fillGradient.addColorStop(0.6, `rgba(255, 140, 40, ${0.72 + pulse3 * 0.10})`);
-          fillGradient.addColorStop(1, `rgba(255, 100, 50, ${0.75 + pulse1 * 0.12})`);
-
-          ctx.fillStyle = fillGradient;
-          ctx.globalAlpha = 0.85 + pulse1 * 0.08;
+          ctx.arc(x, y, radius * 1.5, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
 
-          // 第三层：边框线条（多层叠加）
-          for (let i = 3; i >= 0; i--) {
-            ctx.save();
-            ctx.beginPath();
-            this.drawPolygonPath(part.points);
-            ctx.closePath();
-
-            const lineWidth = 2 + (i === 0 ? 3 : 1) + pulse1 * (i === 0 ? 2 : 0.5);
-            const alpha = i === 0 ? (0.9 + pulse1 * 0.1) : (0.3 - i * 0.05);
-
-            ctx.strokeStyle = i === 0
-              ? `rgba(255, 220, 180, ${alpha})`
-              : `rgba(255, 150, 80, ${alpha})`;
-            ctx.lineWidth = lineWidth;
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-
-            if (i === 0 || i === 1) {
-              ctx.shadowColor = `rgba(255, 140, 50, ${0.6 + pulse1 * 0.4})`;
-              ctx.shadowBlur = 8 + i * 6 + pulse1 * 8;
-            }
-
-            ctx.stroke();
-            ctx.restore();
-          }
-
-          // 第四层：内部纹理/图案
+          // 第三层：核心高亮圆
           ctx.save();
+          const coreGlow = ctx.createRadialGradient(x, y, 0, x, y, radius);
+          coreGlow.addColorStop(0, `rgba(255, 200, 150, ${0.8 + pulse1 * 0.15})`);
+          coreGlow.addColorStop(0.5, `rgba(255, 160, 100, ${0.5 + pulse2 * 0.1})`);
+          coreGlow.addColorStop(1, `rgba(255, 120, 60, ${0.3 + pulse3 * 0.1})`);
+          
+          ctx.fillStyle = coreGlow;
           ctx.beginPath();
-          this.drawPolygonPath(part.points);
-          ctx.closePath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
 
-          ctx.clip();
-
-          // 绘制斜线纹理
-          ctx.globalAlpha = 0.08 + pulse2 * 0.04;
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1;
-
-          const spacing = 12;
-          for (let x = minX; x < maxX; x += spacing) {
-            ctx.beginPath();
-            ctx.moveTo(x, minY);
-            ctx.lineTo(x + spacing, maxY);
-            ctx.stroke();
-          }
+          // 第四层：动态边框
+          ctx.save();
+          const borderAlpha = 0.8 + pulse1 * 0.2;
+          ctx.strokeStyle = `rgba(255, 220, 180, ${borderAlpha})`;
+          ctx.lineWidth = 3 + pulse1 * 2;
+          ctx.shadowColor = `rgba(255, 140, 50, ${0.6 + pulse1 * 0.3})`;
+          ctx.shadowBlur = 15 + pulse1 * 10;
+          
+          ctx.beginPath();
+          ctx.arc(x, y, radius + 5 + pulse1 * 3, 0, Math.PI * 2);
+          ctx.stroke();
           ctx.restore();
 
           // 第五层：中心亮点
           ctx.save();
-          const centerGlow = ctx.createRadialGradient(
-            centerX, centerY, 0,
-            centerX, centerY, 40 + pulse1 * 15
-          );
-          centerGlow.addColorStop(0, `rgba(255, 255, 220, ${0.35 + pulse1 * 0.25})`);
-          centerGlow.addColorStop(0.5, `rgba(255, 230, 180, ${0.15 + pulse2 * 0.10})`);
+          const centerGlow = ctx.createRadialGradient(x, y, 0, x, y, 20 + pulse1 * 10);
+          centerGlow.addColorStop(0, `rgba(255, 255, 220, ${0.6 + pulse1 * 0.3})`);
+          centerGlow.addColorStop(0.5, `rgba(255, 230, 180, ${0.3 + pulse2 * 0.15})`);
           centerGlow.addColorStop(1, 'rgba(255, 200, 150, 0)');
-
+          
           ctx.fillStyle = centerGlow;
-          ctx.fillRect(minX, minY, maxX - minX, maxY - minY);
+          ctx.beginPath();
+          ctx.arc(x, y, 20 + pulse1 * 10, 0, Math.PI * 2);
+          ctx.fill();
           ctx.restore();
 
-          // 绘制高亮标签
+          // 绘制标签
           this.drawHighlightedLabel(part, pulse1, pulse2, pulse3);
-        }
-
-        /**
-         * 绘制普通标签
-         * @param {Object} part - 部位数据
-         */
-        drawLabel(part) {
-          const ctx = this.ctx;
-          const isHighlighted = this.highlightedPart === part.id;
-          
-          if (isHighlighted) return; // 高亮的单独绘制
-
-          const pos = part.labelPos;
-          
-          ctx.font = 'bold 13px Arial, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-
-          // 刀工类型
-          ctx.fillStyle = '#d32f2f';
-          ctx.fillText(part.type, pos.x, pos.y - 10);
-
-          // 部位名称
-          ctx.font = 'bold 15px Arial, sans-serif';
-          ctx.fillStyle = '#333';
-          ctx.fillText(part.name, pos.x, pos.y + 8);
-        }
-
-        /**
-         * 绘制多边形路径（辅助方法）
-         * @param {Array} points - 顶点坐标数组
-         */
-        drawPolygonPath(points) {
-          const ctx = this.ctx;
-          ctx.moveTo(points[0][0], points[0][1]);
-          for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i][0], points[i][1]);
-          }
         }
 
         /**
@@ -1404,31 +1346,31 @@
          */
         drawHighlightedLabel(part, pulse1, pulse2, pulse3) {
           const ctx = this.ctx;
-          const pos = part.labelPos;
+          const { x, y } = part.center;
 
           // 标签尺寸
-          const width = 110;
-          const height = 60;
-          const x = pos.x - width / 2;
-          const y = pos.y - height / 2;
+          const width = 120;
+          const height = 65;
+          const labelX = x - width / 2;
+          const labelY = y - height / 2 - 80;
 
           // 第一层：外发光阴影
           ctx.save();
-          ctx.shadowColor = `rgba(220, 50, 50, ${0.7 + pulse1 * 0.3})`;
-          ctx.shadowBlur = 20 + pulse1 * 15;
+          ctx.shadowColor = `rgba(220, 50, 50, ${0.8 + pulse1 * 0.2})`;
+          ctx.shadowBlur = 25 + pulse1 * 15;
           ctx.shadowOffsetX = 0;
-          ctx.shadowOffsetY = 4 + pulse1 * 2;
+          ctx.shadowOffsetY = 5 + pulse1 * 3;
 
           // 背景渐变
-          const bgGradient = ctx.createLinearGradient(x, y - 10, x + width, y + height + 10);
-          bgGradient.addColorStop(0, `rgba(200, 40, 40, ${0.96 + pulse1 * 0.02})`);
-          bgGradient.addColorStop(0.35, `rgba(230, 80, 20, ${0.95 + pulse2 * 0.03})`);
-          bgGradient.addColorStop(0.65, `rgba(240, 100, 30, ${0.94 + pulse3 * 0.04})`);
-          bgGradient.addColorStop(1, `rgba(200, 50, 50, ${0.96 + pulse1 * 0.02})`);
+          const bgGradient = ctx.createLinearGradient(labelX, labelY - 10, labelX + width, labelY + height + 10);
+          bgGradient.addColorStop(0, `rgba(200, 40, 40, ${0.95 + pulse1 * 0.03})`);
+          bgGradient.addColorStop(0.35, `rgba(230, 80, 20, ${0.94 + pulse2 * 0.04})`);
+          bgGradient.addColorStop(0.65, `rgba(240, 100, 30, ${0.93 + pulse3 * 0.05})`);
+          bgGradient.addColorStop(1, `rgba(200, 50, 50, ${0.95 + pulse1 * 0.03})`);
 
           // 圆角矩形背景
           ctx.beginPath();
-          ctx.roundRect(x, y, width, height, 14);
+          ctx.roundRect(labelX, labelY, width, height, 15);
           ctx.fillStyle = bgGradient;
           ctx.fill();
           ctx.restore();
@@ -1436,16 +1378,15 @@
           // 第二层：边框高光
           ctx.save();
           ctx.beginPath();
-          ctx.roundRect(x, y, width, height, 14);
+          ctx.roundRect(labelX, labelY, width, height, 15);
 
-          // 渐变边框
-          const borderGradient = ctx.createLinearGradient(x, y, x + width, y + height);
-          borderGradient.addColorStop(0, `rgba(255, 230, 200, ${0.6 + pulse1 * 0.25})`);
-          borderGradient.addColorStop(0.5, `rgba(255, 255, 240, ${0.8 + pulse2 * 0.15})`);
-          borderGradient.addColorStop(1, `rgba(255, 220, 180, ${0.6 + pulse1 * 0.25})`);
+          const borderGradient = ctx.createLinearGradient(labelX, labelY, labelX + width, labelY + height);
+          borderGradient.addColorStop(0, `rgba(255, 230, 200, ${0.7 + pulse1 * 0.2})`);
+          borderGradient.addColorStop(0.5, `rgba(255, 255, 240, ${0.9 + pulse2 * 0.1})`);
+          borderGradient.addColorStop(1, `rgba(255, 220, 180, ${0.7 + pulse1 * 0.2})`);
 
           ctx.strokeStyle = borderGradient;
-          ctx.lineWidth = 2.5 + pulse1 * 1;
+          ctx.lineWidth = 3 + pulse1 * 1.5;
           ctx.lineJoin = 'round';
           ctx.stroke();
           ctx.restore();
@@ -1453,10 +1394,10 @@
           // 第三层：内部光泽效果
           ctx.save();
           ctx.beginPath();
-          ctx.roundRect(x + 4, y + 4, width - 8, height / 2 - 2, [10, 10, 0, 0]);
+          ctx.roundRect(labelX + 5, labelY + 5, width - 10, height / 2 - 3, [12, 12, 0, 0]);
 
-          const shineGradient = ctx.createLinearGradient(x, y, x, y + height / 2);
-          shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.35)');
+          const shineGradient = ctx.createLinearGradient(labelX, labelY, labelX, labelY + height / 2);
+          shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
           shineGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
           ctx.fillStyle = shineGradient;
@@ -1467,45 +1408,42 @@
           ctx.save();
 
           // 刀工类型文字
-          ctx.font = `bold ${15 + pulse1 * 1}px Arial, "PingFang SC", sans-serif`;
+          ctx.font = `bold ${16 + pulse1 * 1.5}px Arial, "PingFang SC", sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
 
-          // 文字阴影
-          ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-          ctx.shadowBlur = 4;
-          ctx.shadowOffsetX = 1;
-          ctx.shadowOffsetY = 1;
-
-          ctx.fillStyle = '#FFF8DC';  /* Cornsilk - 温暖的米黄色 */
-          ctx.fillText(part.type, pos.x, pos.y - 13);
-
-          // 部位名称文字
-          ctx.font = `bold ${17 + pulse1 * 1.5}px Arial, "PingFang SC", sans-serif`;
           ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
           ctx.shadowBlur = 5;
           ctx.shadowOffsetX = 1;
           ctx.shadowOffsetY = 1;
 
+          ctx.fillStyle = '#FFF8DC';
+          ctx.fillText(part.type, x, labelY + height / 2 - 12);
+
+          // 部位名称文字
+          ctx.font = `bold ${18 + pulse1 * 2}px Arial, "PingFang SC", sans-serif`;
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+          ctx.shadowBlur = 6;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+
           ctx.fillStyle = '#FFFFFF';
-          ctx.fillText(part.name, pos.x, pos.y + 12);
+          ctx.fillText(part.name, x, labelY + height / 2 + 14);
 
           ctx.restore();
 
           // 第五层：装饰性角标
-          if (pulse2 > 0.7) {
+          if (pulse2 > 0.6) {
             ctx.save();
-            ctx.globalAlpha = (pulse2 - 0.7) * 2;
+            ctx.globalAlpha = (pulse2 - 0.6) * 2.5;
 
-            // 左上角装饰
             ctx.beginPath();
-            ctx.arc(x + 8, y + 8, 3, 0, Math.PI * 2);
+            ctx.arc(labelX + 10, labelY + 10, 4, 0, Math.PI * 2);
             ctx.fillStyle = '#FFD700';
             ctx.fill();
 
-            // 右上角装饰
             ctx.beginPath();
-            ctx.arc(x + width - 8, y + 8, 3, 0, Math.PI * 2);
+            ctx.arc(labelX + width - 10, labelY + 10, 4, 0, Math.PI * 2);
             ctx.fill();
 
             ctx.restore();
