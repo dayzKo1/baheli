@@ -642,128 +642,587 @@
 
       <!-- 下方部位图区域 -->
       <div class="cow-container">
-        <!-- 牛的图片底图 -->
-        <img
-          src="部位图.png"
-          alt="牛肉部位图"
-          class="cow-image"
-        />
-
-        <!-- SVG覆盖层 - 精确部位区域 -->
-        <svg class="cow-overlay" viewBox="0 0 540 480" preserveAspectRatio="xMidYMid meet">
-          <!-- 定义高亮渐变 -->
-          <defs>
-            <linearGradient id="highlightGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:rgba(255,87,34,0.85);stop-opacity:1" />
-              <stop offset="50%" style="stop-color:rgba(255,152,0,0.80);stop-opacity:1" />
-              <stop offset="100%" style="stop-color:rgba(255,87,34,0.85);stop-opacity:1" />
-            </linearGradient>
-
-            <!-- 发光滤镜 -->
-            <filter id="glowFilter">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-
-          <!-- 1. 奶香雪花 - 上方偏左（肩颈区域）-->
-          <polygon class="part-area" data-part="naixiangxuehua"
-            points="175,78 198,62 235,60 268,68 285,85 278,112 256,130 223,136 190,128 168,112"/>
-
-          <!-- 2. 软嫩匙肉 - 中间偏左上（上脑区域）-->
-          <polygon class="part-area" data-part="ruanenshirou"
-            points="148,125 185,114 218,122 245,140 250,168 233,195 202,206 165,198 143,172 139,146"/>
-
-          <!-- 3. 弹牙胸口油 - 左侧中间（胸口区域）-->
-          <polygon class="part-area" data-part="tanyaxiongkouyou"
-            points="110,195 148,182 182,190 204,215 208,248 189,278 157,288 125,278 105,248 101,220"/>
-
-          <!-- 4. 爽脆三花趾 - 左下（前腿区域）-->
-          <polygon class="part-area" data-part="shuangcuisanhuazhi"
-            points="152,285 188,276 220,290 236,318 240,350 222,375 190,386 158,378 141,352 138,321"/>
-
-          <!-- 5. 劲爽匙柄 - 中间偏左（里脊区域）-->
-          <polygon class="part-area" data-part="jinshuangshibing"
-            points="205,212 245,200 283,211 308,239 314,273 296,303 262,313 227,305 205,276 201,243"/>
-
-          <!-- 6. 鲜甜吊龙 - 中上偏右（外脊区域）-->
-          <polygon class="part-area" data-part="xiantiandiaolong"
-            points="285,92 328,78 377,85 417,103 442,135 448,170 432,201 394,218 352,221 312,207 286,176 280,138"/>
-
-          <!-- 7. 脂香肥胼 - 中间（五花区域）-->
-          <polygon class="part-area" data-part="zhixiangfeipian"
-            points="288,228 334,214 382,225 420,250 436,284 434,320 409,349 367,363 322,357 288,330 278,291 282,257"/>
-
-          <!-- 8. 精选嫩肉 - 右上（后臀区域）-->
-          <polygon class="part-area" data-part="jingxuanenrou"
-            points="418,115 459,101 502,115 531,148 539,186 523,225 485,248 442,251 408,230 395,192 395,154"/>
-
-          <!-- 9. 爽口双层肉 - 右中（后腿上部）-->
-          <polygon class="part-area" data-part="shuangkoushuangcengrou"
-            points="416,258 463,244 508,262 540,298 548,340 530,380 488,400 443,403 409,382 397,340 401,298"/>
-
-          <!-- 10. 脆弹五花趾 - 右下（后腿下部）-->
-          <polygon class="part-area" data-part="cuidanwuhuazhi"
-            points="450,402 495,388 536,410 560,450 564,496 542,536 503,557 460,560 428,538 416,496 422,450"/>
-        </svg>
-
-        <!-- 部位标签 -->
-        <div class="part-label part-1" data-part="naixiangxuehua">
-          <span class="part-type">斜切</span>
-          <span class="part-name">奶香雪花</span>
+        <!-- Canvas容器 -->
+        <div class="canvas-wrapper">
+          <canvas id="cowCanvas" class="cow-canvas"></canvas>
         </div>
 
-        <div class="part-label part-2" data-part="ruanenshirou">
-          <span class="part-type">斜刀</span>
-          <span class="part-name">软嫩匙肉</span>
+        <!-- 控制按钮组 -->
+        <div class="canvas-controls">
+          <button class="zoom-btn" id="zoomOutBtn" title="缩小">−</button>
+          <span class="zoom-level" id="zoomLevel">100%</span>
+          <button class="zoom-btn" id="zoomInBtn" title="放大">+</button>
+          <button class="reset-btn" id="resetBtn" title="重置视图">重置</button>
         </div>
 
-        <div class="part-label part-3" data-part="jinshuangshibing">
-          <span class="part-type">斜据</span>
-          <span class="part-name">劲爽匙柄</span>
-        </div>
-
-        <div class="part-label part-4" data-part="tanyaxiongkouyou">
-          <span class="part-type">直刀</span>
-          <span class="part-name">弹牙胸口油</span>
-        </div>
-
-        <div class="part-label part-5" data-part="shuangcuisanhuazhi">
-          <span class="part-type">蝴蝶刀</span>
-          <span class="part-name">爽脆三花趾</span>
-        </div>
-
-        <div class="part-label part-6" data-part="xiantiandiaolong">
-          <span class="part-type">吊据</span>
-          <span class="part-name">鲜甜吊龙</span>
-        </div>
-
-        <div class="part-label part-7" data-part="zhixiangfeipian">
-          <span class="part-type">直刀</span>
-          <span class="part-name">脂香肥胼</span>
-        </div>
-
-        <div class="part-label part-8" data-part="jingxuanenrou">
-          <span class="part-type">推刀</span>
-          <span class="part-name">精选嫩肉</span>
-        </div>
-
-        <div class="part-label part-9" data-part="shuangkoushuangcengrou">
-          <span class="part-type">直刀</span>
-          <span class="part-name">爽口双层肉</span>
-        </div>
-
-        <div class="part-label part-10" data-part="cuidanwuhuazhi">
-          <span class="part-type">蝴蝶刀</span>
-          <span class="part-name">脆弹五花趾</span>
-        </div>
+        <!-- 提示信息 -->
+        <div class="canvas-hint">💡 滚轮缩放 · 拖拽平移 · 点击部位查看详情</div>
       </div>
     </div>
 
     <script>
+      /**
+       * Canvas部位图渲染引擎
+       * 支持缩放、拖拽、高亮等功能
+       */
+      class CowCanvasEngine {
+        constructor(canvasId) {
+          this.canvas = document.getElementById(canvasId);
+          this.ctx = this.canvas.getContext('2d');
+          
+          // 图片相关
+          this.image = null;
+          this.imageLoaded = false;
+          
+          // 视图状态
+          this.scale = 1;
+          this.minScale = 0.5;
+          this.maxScale = 3;
+          this.offsetX = 0;
+          this.offsetY = 0;
+          
+          // 交互状态
+          this.isDragging = false;
+          this.lastX = 0;
+          this.lastY = 0;
+          
+          // 高亮状态
+          this.highlightedPart = null;
+          this.animationFrame = 0;
+          
+          // 部位数据定义（基于原始图片尺寸 540x480）
+          this.partsData = [
+            {
+              id: 'naixiangxuehua',
+              name: '奶香雪花',
+              type: '斜切',
+              points: [[175,78],[198,62],[235,60],[268,68],[285,85],[278,112],[256,130],[223,136],[190,128],[168,112]],
+              labelPos: { x: 222, y: 95 }
+            },
+            {
+              id: 'ruanenshirou',
+              name: '软嫩匙肉',
+              type: '斜刀',
+              points: [[148,125],[185,114],[218,122],[245,140],[250,168],[233,195],[202,206],[165,198],[143,172],[139,146]],
+              labelPos: { x: 190, y: 160 }
+            },
+            {
+              id: 'tanyaxiongkouyou',
+              name: '弹牙胸口油',
+              type: '直刀',
+              points: [[110,195],[148,182],[182,190],[204,215],[208,248],[189,278],[157,288],[125,278],[105,248],[101,220]],
+              labelPos: { x: 150, y: 245 }
+            },
+            {
+              id: 'shuangcuisanhuazhi',
+              name: '爽脆三花趾',
+              type: '蝴蝶刀',
+              points: [[152,285],[188,276],[220,290],[236,318],[240,350],[222,375],[190,386],[158,378],[141,352],[138,321]],
+              labelPos: { x: 188, y: 335 }
+            },
+            {
+              id: 'jinshuangshibing',
+              name: '劲爽匙柄',
+              type: '斜据',
+              points: [[205,212],[245,200],[283,211],[308,239],[314,273],[296,303],[262,313],[227,305],[205,276],[201,243]],
+              labelPos: { x: 255, y: 260 }
+            },
+            {
+              id: 'xiantiandiaolong',
+              name: '鲜甜吊龙',
+              type: '吊据',
+              points: [[285,92],[328,78],[377,85],[417,103],[442,135],[448,170],[432,201],[394,218],[352,221],[312,207],[286,176],[280,138]],
+              labelPos: { x: 365, y: 145 }
+            },
+            {
+              id: 'zhixiangfeipian',
+              name: '脂香肥胼',
+              type: '直刀',
+              points: [[288,228],[334,214],[382,225],[420,250],[436,284],[434,320],[409,349],[367,363],[322,357],[288,330],[278,291],[282,257]],
+              labelPos: { x: 360, y: 295 }
+            },
+            {
+              id: 'jingxuanenrou',
+              name: '精选嫩肉',
+              type: '推刀',
+              points: [[418,115],[459,101],[502,115],[531,148],[539,186],[523,225],[485,248],[442,251],[408,230],[395,192],[395,154]],
+              labelPos: { x: 468, y: 175 }
+            },
+            {
+              id: 'shuangkoushuangcengrou',
+              name: '爽口双层肉',
+              type: '直刀',
+              points: [[416,258],[463,244],[508,262],[540,298],[548,340],[530,380],[488,400],[443,403],[409,382],[397,340],[401,298]],
+              labelPos: { x: 472, y: 330 }
+            },
+            {
+              id: 'cuidanwuhuazhi',
+              name: '脆弹五花趾',
+              type: '蝴蝶刀',
+              points: [[450,402],[495,388],[536,410],[560,450],[564,496],[542,536],[503,557],[460,560],[428,538],[416,496],[422,450]],
+              labelPos: { x: 490, y: 480 }
+            }
+          ];
+          
+          this.init();
+        }
+
+        /**
+         * 初始化Canvas引擎
+         */
+        init() {
+          this.loadImage();
+          this.setupEventListeners();
+          this.startAnimation();
+        }
+
+        /**
+         * 加载部位图片
+         */
+        loadImage() {
+          this.image = new Image();
+          this.image.onload = () => {
+            this.imageLoaded = true;
+            this.resizeCanvas();
+            this.centerView();
+            this.render();
+          };
+          this.image.src = '部位图.png';
+        }
+
+        /**
+         * 调整Canvas尺寸以适应容器
+         */
+        resizeCanvas() {
+          const wrapper = this.canvas.parentElement;
+          const containerWidth = wrapper.clientWidth;
+          
+          if (this.image) {
+            const aspectRatio = this.image.width / this.image.height;
+            this.canvas.width = containerWidth;
+            this.canvas.height = containerWidth / aspectRatio;
+          }
+        }
+
+        /**
+         * 居中视图
+         */
+        centerView() {
+          if (this.image && this.canvas.width > 0) {
+            this.scale = Math.min(
+              this.canvas.width / this.image.width,
+              this.canvas.height / this.image.height
+            );
+            this.offsetX = (this.canvas.width - this.image.width * this.scale) / 2;
+            this.offsetY = (this.canvas.height - this.image.height * this.scale) / 2;
+            this.updateZoomDisplay();
+          }
+        }
+
+        /**
+         * 设置事件监听器
+         */
+        setupEventListeners() {
+          // 滚轮缩放
+          this.canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            this.zoom(delta, e.offsetX, e.offsetY);
+          });
+
+          // 鼠标拖拽
+          this.canvas.addEventListener('mousedown', (e) => {
+            this.isDragging = true;
+            this.lastX = e.clientX;
+            this.lastY = e.clientY;
+            this.canvas.style.cursor = 'grabbing';
+          });
+
+          window.addEventListener('mousemove', (e) => {
+            if (this.isDragging) {
+              const deltaX = e.clientX - this.lastX;
+              const deltaY = e.clientY - this.lastY;
+              this.offsetX += deltaX;
+              this.offsetY += deltaY;
+              this.lastX = e.clientX;
+              this.lastY = e.clientY;
+              this.render();
+            }
+          });
+
+          window.addEventListener('mouseup', () => {
+            this.isDragging = false;
+            this.canvas.style.cursor = 'grab';
+          });
+
+          // 触摸事件支持
+          let touchStartDistance = 0;
+          let touchStartScale = 1;
+
+          this.canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+              this.isDragging = true;
+              this.lastX = e.touches[0].clientX;
+              this.lastY = e.touches[0].clientY;
+            } else if (e.touches.length === 2) {
+              touchStartDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+              );
+              touchStartScale = this.scale;
+            }
+            e.preventDefault();
+          }, { passive: false });
+
+          this.canvas.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1 && this.isDragging) {
+              const deltaX = e.touches[0].clientX - this.lastX;
+              const deltaY = e.touches[0].clientY - this.lastY;
+              this.offsetX += deltaX;
+              this.offsetY += deltaY;
+              this.lastX = e.touches[0].clientX;
+              this.lastY = e.touches[0].clientY;
+              this.render();
+            } else if (e.touches.length === 2) {
+              const currentDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+              );
+              const newScale = touchStartScale * (currentDistance / touchStartDistance);
+              this.scale = Math.max(this.minScale, Math.min(this.maxScale, newScale));
+              this.updateZoomDisplay();
+              this.render();
+            }
+            e.preventDefault();
+          }, { passive: false });
+
+          this.canvas.addEventListener('touchend', () => {
+            this.isDragging = false;
+          });
+
+          // 点击检测部位
+          this.canvas.addEventListener('click', (e) => {
+            if (!this.isDragging) {
+              this.handleClick(e.offsetX, e.offsetY);
+            }
+          });
+
+          // 窗口大小改变
+          window.addEventListener('resize', () => {
+            this.resizeCanvas();
+            this.centerView();
+            this.render();
+          });
+
+          // 控制按钮
+          document.getElementById('zoomInBtn').addEventListener('click', () => {
+            this.zoom(0.2, this.canvas.width / 2, this.canvas.height / 2);
+          });
+
+          document.getElementById('zoomOutBtn').addEventListener('click', () => {
+            this.zoom(-0.2, this.canvas.width / 2, this.canvas.height / 2);
+          });
+
+          document.getElementById('resetBtn').addEventListener('click', () => {
+            this.resetView();
+          });
+        }
+
+        /**
+         * 缩放操作
+         * @param {number} delta - 缩放增量
+         * @param {number} centerX - 缩放中心X坐标
+         * @param {number} centerY - 缩放中心Y坐标
+         */
+        zoom(delta, centerX, centerY) {
+          const oldScale = this.scale;
+          this.scale = Math.max(this.minScale, Math.min(this.maxScale, this.scale + delta));
+          
+          if (oldScale !== this.scale) {
+            const scaleRatio = this.scale / oldScale;
+            this.offsetX = centerX - (centerX - this.offsetX) * scaleRatio;
+            this.offsetY = centerY - (centerY - this.offsetY) * scaleRatio;
+            this.updateZoomDisplay();
+            this.render();
+          }
+        }
+
+        /**
+         * 重置视图
+         */
+        resetView() {
+          this.centerView();
+          this.render();
+        }
+
+        /**
+         * 更新缩放显示
+         */
+        updateZoomDisplay() {
+          const zoomLevel = document.getElementById('zoomLevel');
+          zoomLevel.textContent = `${Math.round(this.scale * 100)}%`;
+          
+          document.getElementById('zoomInBtn').disabled = this.scale >= this.maxScale;
+          document.getElementById('zoomOutBtn').disabled = this.scale <= this.minScale;
+        }
+
+        /**
+         * 处理点击事件
+         * @param {number} x - 点击X坐标
+         * @param {number} y - 点击Y坐标
+         */
+        handleClick(x, y) {
+          const canvasPoint = this.screenToCanvas(x, y);
+
+          for (const part of this.partsData) {
+            if (this.isPointInPolygon(canvasPoint.x, canvasPoint.y, part.points)) {
+              // 高亮当前部位
+              this.setHighlight(part.id);
+
+              // 跳转到详情页面
+              setTimeout(() => {
+                window.location.href = `detail.html?part=${part.id}&name=${encodeURIComponent(part.name)}`;
+              }, 300);
+
+              return;
+            }
+          }
+        }
+
+        /**
+         * 屏幕坐标转Canvas坐标
+         * @param {number} screenX - 屏幕X坐标
+         * @param {number} screenY - 屏幕Y坐标
+         * @returns {Object} Canvas坐标
+         */
+        screenToCanvas(screenX, screenY) {
+          return {
+            x: (screenX - this.offsetX) / this.scale,
+            y: (screenY - this.offsetY) / this.scale
+          };
+        }
+
+        /**
+         * 判断点是否在多边形内
+         * @param {number} x - 点的X坐标
+         * @param {number} y - 点的Y坐标
+         * @param {Array} polygon - 多边形顶点数组
+         * @returns {boolean} 是否在多边形内
+         */
+        isPointInPolygon(x, y, polygon) {
+          let inside = false;
+          for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            const xi = polygon[i][0], yi = polygon[i][1];
+            const xj = polygon[j][0], yj = polygon[j][1];
+            
+            if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
+              inside = !inside;
+            }
+          }
+          return inside;
+        }
+
+        /**
+         * 设置高亮部位
+         * @param {string} partId - 部位ID
+         */
+        setHighlight(partId) {
+          this.highlightedPart = partId;
+          this.render();
+        }
+
+        /**
+         * 开始动画循环
+         */
+        startAnimation() {
+          const animate = () => {
+            this.animationFrame++;
+            if (this.highlightedPart) {
+              this.render();
+            }
+            requestAnimationFrame(animate);
+          };
+          animate();
+        }
+
+        /**
+         * 主渲染函数
+         */
+        render() {
+          if (!this.imageLoaded || !this.ctx) return;
+
+          const ctx = this.ctx;
+          
+          // 清空画布
+          ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // 保存当前状态
+          ctx.save();
+
+          // 应用变换
+          ctx.translate(this.offsetX, this.offsetY);
+          ctx.scale(this.scale, this.scale);
+
+          // 绘制图片
+          ctx.drawImage(this.image, 0, 0);
+
+          // 绘制高亮部位
+          if (this.highlightedPart) {
+            const part = this.partsData.find(p => p.id === this.highlightedPart);
+            if (part) {
+              this.drawHighlightedArea(part);
+            }
+          }
+
+          // 绘制所有部位标签
+          for (const part of this.partsData) {
+            this.drawLabel(part);
+          }
+
+          // 恢复状态
+          ctx.restore();
+        }
+
+        /**
+         * 绘制高亮区域
+         * @param {Object} part - 部位数据
+         */
+        drawHighlightedArea(part) {
+          const ctx = this.ctx;
+          const pulse = (Math.sin(this.animationFrame * 0.05) + 1) / 2;
+
+          // 创建渐变填充
+          const gradient = ctx.createLinearGradient(
+            Math.min(...part.points.map(p => p[0])),
+            Math.min(...part.points.map(p => p[1])),
+            Math.max(...part.points.map(p => p[0])),
+            Math.max(...part.points.map(p => p[1]))
+          );
+
+          gradient.addColorStop(0, `rgba(255, 87, 34, ${0.7 + pulse * 0.15})`);
+          gradient.addColorStop(0.5, `rgba(255, 152, 0, ${0.65 + pulse * 0.15})`);
+          gradient.addColorStop(1, `rgba(255, 87, 34, ${0.7 + pulse * 0.15})`);
+
+          // 绘制填充多边形
+          ctx.beginPath();
+          ctx.moveTo(part.points[0][0], part.points[0][1]);
+          for (let i = 1; i < part.points.length; i++) {
+            ctx.lineTo(part.points[i][0], part.points[i][1]);
+          }
+          ctx.closePath();
+
+          ctx.fillStyle = gradient;
+          ctx.fill();
+
+          // 绘制边框
+          ctx.strokeStyle = `rgba(255, 87, 34, ${0.8 + pulse * 0.2})`;
+          ctx.lineWidth = 3 + pulse * 2;
+          ctx.lineJoin = 'round';
+          ctx.stroke();
+
+          // 绘制发光效果
+          ctx.shadowColor = `rgba(255, 87, 34, ${0.6 + pulse * 0.4})`;
+          ctx.shadowBlur = 15 + pulse * 10;
+          ctx.stroke();
+
+          // 重置阴影
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+
+          // 绘制高亮标签
+          this.drawHighlightedLabel(part, pulse);
+        }
+
+        /**
+         * 绘制普通标签
+         * @param {Object} part - 部位数据
+         */
+        drawLabel(part) {
+          const ctx = this.ctx;
+          const isHighlighted = this.highlightedPart === part.id;
+          
+          if (isHighlighted) return; // 高亮的单独绘制
+
+          const pos = part.labelPos;
+          
+          ctx.font = 'bold 13px Arial, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          // 刀工类型
+          ctx.fillStyle = '#d32f2f';
+          ctx.fillText(part.type, pos.x, pos.y - 10);
+
+          // 部位名称
+          ctx.font = 'bold 15px Arial, sans-serif';
+          ctx.fillStyle = '#333';
+          ctx.fillText(part.name, pos.x, pos.y + 8);
+        }
+
+        /**
+         * 绘制高亮标签
+         * @param {Object} part - 部位数据
+         * @param {number} pulse - 脉冲值
+         */
+        drawHighlightedLabel(part, pulse) {
+          const ctx = this.ctx;
+          const pos = part.labelPos;
+
+          // 标签背景
+          const padding = 12;
+          const width = 100;
+          const height = 55;
+          const x = pos.x - width / 2;
+          const y = pos.y - height / 2;
+
+          // 背景渐变
+          const bgGradient = ctx.createLinearGradient(x, y, x + width, y + height);
+          bgGradient.addColorStop(0, `rgba(220, 38, 38, ${0.95 + pulse * 0.03})`);
+          bgGradient.addColorStop(0.5, `rgba(234, 88, 12, ${0.95 + pulse * 0.03})`);
+          bgGradient.addColorStop(1, `rgba(220, 38, 38, ${0.95 + pulse * 0.03})`);
+
+          // 绘制圆角矩形背景
+          ctx.beginPath();
+          ctx.roundRect(x, y, width, height, 12);
+          ctx.fillStyle = bgGradient;
+          ctx.fill();
+
+          // 边框发光
+          ctx.shadowColor = `rgba(220, 38, 38, ${0.6 + pulse * 0.4})`;
+          ctx.shadowBlur = 12 + pulse * 8;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${0.3 + pulse * 0.2})`;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+
+          // 刀工类型文字
+          ctx.font = 'bold 14px Arial, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#fef3c7';
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+          ctx.shadowBlur = 3;
+          ctx.fillText(part.type, pos.x, pos.y - 12);
+
+          // 部位名称文字
+          ctx.font = 'bold 16px Arial, sans-serif';
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+          ctx.shadowBlur = 4;
+          ctx.fillText(part.name, pos.x, pos.y + 10);
+
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      /**
+       * 全局变量：Canvas引擎实例
+       */
+      let cowEngine = null;
+
       /**
        * 播放开场动画
        * @returns {void}
@@ -778,8 +1237,22 @@
 
           setTimeout(function() {
             splashScreen.style.display = 'none';
+            
+            // 动画结束后初始化Canvas
+            initCowCanvas();
           }, 800);
         }, 2800);
+      }
+
+      /**
+       * 初始化Canvas引擎
+       * @returns {void}
+       */
+      function initCowCanvas() {
+        cowEngine = new CowCanvasEngine('cowCanvas');
+
+        // 解析URL参数并设置高亮
+        highlightPartFromURL();
       }
 
       /**
@@ -790,66 +1263,55 @@
         const urlParams = new URLSearchParams(window.location.search);
         const part = urlParams.get("part");
 
-        if (part) {
-          // 高亮SVG区域
-          const svgArea = document.querySelector(`.part-area[data-part="${part}"]`);
-          if (svgArea) {
-            svgArea.classList.add("highlighted");
-          }
-
-          // 高亮标签
-          const label = document.querySelector(`.part-label[data-part="${part}"]`);
-          if (label) {
-            label.classList.add("highlighted");
-            // 创建覆盖文字层
-            createOverlayText(label, part);
-          }
+        if (part && cowEngine) {
+          cowEngine.setHighlight(part);
+          
+          // 延迟后自动定位到高亮部位
+          setTimeout(() => {
+            centerOnHighlightedPart(part);
+          }, 500);
         }
       }
 
       /**
-       * 创建覆盖文字层，完全覆盖原图上的文字
-       * @param {HTMLElement} originalLabel - 原始标签元素
-       * @param {string} partName - 部位名称
+       * 将视图居中到指定部位
+       * @param {string} partId - 部位ID
        * @returns {void}
        */
-      function createOverlayText(originalLabel, partName) {
-        const container = document.querySelector('.cow-container');
-        const overlay = document.createElement('div');
-        overlay.className = 'part-overlay-text';
-        overlay.setAttribute('data-part', partName);
+      function centerOnHighlightedPart(partId) {
+        if (!cowEngine || !cowEngine.image) return;
 
-        // 获取原始标签的位置和内容
-        const rect = originalLabel.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        const typeEl = originalLabel.querySelector('.part-type');
-        const nameEl = originalLabel.querySelector('.part-name');
+        const part = cowEngine.partsData.find(p => p.id === partId);
+        if (!part) return;
 
-        // 计算相对位置
-        const top = ((rect.top - containerRect.top) / containerRect.height) * 100;
-        const left = ((rect.left - containerRect.left) / containerRect.width) * 100;
+        // 计算部位的边界框
+        const xs = part.points.map(p => p[0]);
+        const ys = part.points.map(p => p[1]);
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        const minY = Math.min(...ys);
+        const maxY = Math.max(...ys);
+        
+        const partCenterX = (minX + maxX) / 2;
+        const partCenterY = (minY + maxY) / 2;
 
-        overlay.style.top = `${top}%`;
-        overlay.style.left = `${left}%`;
-        overlay.innerHTML = `
-          <span class="overlay-type">${typeEl ? typeEl.textContent : ''}</span>
-          <span class="overlay-name">${nameEl ? nameEl.textContent : ''}</span>
-        `;
+        // 放大到合适大小
+        const targetScale = 1.5;
+        cowEngine.scale = Math.max(cowEngine.minScale, Math.min(cowEngine.maxScale, targetScale));
 
-        container.appendChild(overlay);
+        // 计算偏移量使部位居中
+        cowEngine.offsetX = cowEngine.canvas.width / 2 - partCenterX * cowEngine.scale;
+        cowEngine.offsetY = cowEngine.canvas.height / 2 - partCenterY * cowEngine.scale;
 
-        // 延迟显示动画
-        setTimeout(() => {
-          overlay.classList.add('visible');
-        }, 100);
+        cowEngine.updateZoomDisplay();
+        cowEngine.render();
       }
 
       /**
-       * 页面加载完成后初始化动画和高亮效果
+       * 页面加载完成后初始化
        */
       document.addEventListener("DOMContentLoaded", function () {
         playSplashAnimation();
-        highlightPartFromURL();
       });
     </script>
   </body>
