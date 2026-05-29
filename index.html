@@ -24,7 +24,7 @@
           "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
         background: #fff;
         padding: 20px;
-        max-width: 500px;
+        max-width: none;
         margin: 0 auto;
         min-height: 100vh;
       }
@@ -470,10 +470,12 @@
       /* 下方部位图区域 */
       .cow-container {
         position: relative;
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px 0;
+        width: 100vw;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        left: 50%;
+        transform: translateX(-50%);
       }
 
       /* Canvas容器样式 */
@@ -482,14 +484,15 @@
         width: 100%;
         height: auto;
         overflow: hidden;
-        border-radius: 12px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border-radius: 0;
+        box-shadow: none;
         background: #fafafa;
       }
 
       .cow-canvas {
         display: block;
         width: 100%;
+        height: auto;
         cursor: grab;
         touch-action: none;
       }
@@ -576,6 +579,127 @@
         color: #888;
         margin-top: 10px;
         font-style: italic;
+      }
+
+      /* 全局全屏适配 */
+      html {
+        overflow-x: hidden;
+      }
+
+      @media screen and (orientation: landscape) and (min-width: 768px) {
+        html, body {
+          height: 100%;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+
+        body {
+          padding: 0;
+          background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        }
+      }
+
+      /* 横屏模式 - 全屏展示 */
+      @media screen and (orientation: landscape) and (min-width: 768px) {
+        body {
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+
+        .main-content {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+          padding: 0;
+        }
+
+        .content-section {
+          padding: 20px 30px;
+          flex-shrink: 0;
+        }
+
+        .main-title {
+          font-size: 32px;
+        }
+
+        .main-subtitle {
+          font-size: 22px;
+        }
+
+        .cow-container {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: calc(100vh * 1.125);
+          height: calc(100vw / 1.125);
+          max-width: none;
+          z-index: 10;
+        }
+
+        .canvas-wrapper {
+          width: 100%;
+          height: 100%;
+          border-radius: 16px;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+          overflow: hidden;
+        }
+
+        .cow-canvas {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+
+        .canvas-controls {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(255, 255, 255, 0.95);
+          padding: 12px 24px;
+          border-radius: 30px;
+          z-index: 20;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .canvas-hint {
+          display: none;
+        }
+      }
+
+      /* 移动端横屏优化 */
+      @media screen and (orientation: landscape) and (max-width: 767px) {
+        .content-section {
+          padding: 15px;
+        }
+
+        .main-title {
+          font-size: 28px;
+        }
+
+        .main-subtitle {
+          font-size: 18px;
+        }
+
+        .main-description {
+          font-size: 14px;
+          line-height: 1.6;
+        }
+
+        .cow-container {
+          width: 100vw;
+          transform: translateX(-50%) translateY(0) !important;
+          top: auto !important;
+          bottom: 0;
+          position: fixed;
+          left: 50% !important;
+        }
+
+        .canvas-wrapper {
+          border-radius: 12px 12px 0 0;
+          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+        }
       }
     </style>
   </head>
@@ -791,17 +915,40 @@
         }
 
         /**
-         * 调整Canvas尺寸以适应容器
+         * 调整Canvas尺寸以适应容器或全屏显示
          */
         resizeCanvas() {
-          const wrapper = this.canvas.parentElement;
-          const containerWidth = wrapper.clientWidth;
-          
-          if (this.image) {
-            const aspectRatio = this.image.width / this.image.height;
-            this.canvas.width = containerWidth;
-            this.canvas.height = containerWidth / aspectRatio;
+          if (!this.image) return;
+
+          const aspectRatio = this.image.width / this.image.height;
+          const isLandscape = window.innerWidth > window.innerHeight;
+          const isWideScreen = window.innerWidth >= 768;
+
+          let canvasWidth, canvasHeight;
+
+          if (isLandscape && isWideScreen) {
+            // 桌面端横屏模式：占满屏幕高度，按比例计算宽度
+            canvasHeight = window.innerHeight - 120;  // 留出控制栏空间
+            canvasWidth = canvasHeight * aspectRatio;
+
+            // 如果计算出的宽度超过屏幕宽度，则以屏幕宽度为准
+            if (canvasWidth > window.innerWidth) {
+              canvasWidth = window.innerWidth - 40;
+              canvasHeight = canvasWidth / aspectRatio;
+            }
+          } else if (isLandscape && !isWideScreen) {
+            // 移动端横屏：使用屏幕宽度
+            canvasWidth = window.innerWidth;
+            canvasHeight = canvasWidth / aspectRatio;
+          } else {
+            // 竖屏模式：使用容器宽度（100vw）
+            const wrapper = this.canvas.parentElement || document.body;
+            canvasWidth = wrapper.clientWidth || window.innerWidth;
+            canvasHeight = canvasWidth / aspectRatio;
           }
+
+          this.canvas.width = Math.max(canvasWidth, 320);
+          this.canvas.height = Math.max(canvasHeight, 284);
         }
 
         /**
@@ -912,6 +1059,15 @@
             this.resizeCanvas();
             this.centerView();
             this.render();
+          });
+
+          // 屏幕方向改变
+          window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+              this.resizeCanvas();
+              this.centerView();
+              this.render();
+            }, 100);
           });
 
           // 控制按钮
