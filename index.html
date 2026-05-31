@@ -824,27 +824,112 @@
           box-shadow: none;
         }
       }
+
+      /* 小程序竖屏优化 */
+      @media screen and (max-width: 768px) and (orientation: portrait) {
+        .splash-screen {
+          padding: 20px;
+        }
+
+        .splash-logo-container {
+          width: 280px;
+          height: 280px;
+        }
+
+        .splash-welcome-text {
+          gap: 6px;
+          margin-bottom: 25px;
+        }
+
+        .welcome-char {
+          font-size: 52px;
+        }
+
+        .splash-particle.large {
+          width: 10px;
+          height: 10px;
+        }
+
+        .splash-particle {
+          width: 7px;
+          height: 7px;
+        }
+
+        .splash-particle.small {
+          width: 4px;
+          height: 4px;
+        }
+
+        .content-section {
+          padding: 20px 15px;
+          height: auto;
+          min-height: 45vh;
+        }
+
+        .main-title {
+          font-size: 26px;
+          letter-spacing: 3px;
+        }
+
+        .main-subtitle {
+          font-size: 18px;
+          letter-spacing: 1.5px;
+        }
+
+        .cow-container {
+          height: 55vh;
+        }
+      }
+
+      /* 超小屏幕优化（小于375px） */
+      @media screen and (max-width: 375px) {
+        .splash-logo-container {
+          width: 240px;
+          height: 240px;
+        }
+
+        .welcome-char {
+          font-size: 44px;
+        }
+
+        .splash-welcome-text {
+          gap: 4px;
+          margin-bottom: 20px;
+        }
+
+        .main-title {
+          font-size: 22px;
+        }
+
+        .main-subtitle {
+          font-size: 16px;
+        }
+
+        .splash-particle {
+          display: none;
+        }
+      }
     </style>
   </head>
   <body>
     <!-- 开场动画 -->
     <div class="splash-screen" id="splashScreen">
       <!-- 装饰粒子 -->
-      <div class="splash-particle large" style="top: 8%; left: 12%; animation-delay: 0s;"></div>
-      <div class="splash-particle" style="top: 18%; left: 78%; animation-delay: 0.3s;"></div>
-      <div class="splash-particle small" style="top: 28%; left: 22%; animation-delay: 0.6s;"></div>
-      <div class="splash-particle large" style="top: 38%; left: 88%; animation-delay: 0.9s;"></div>
-      <div class="splash-particle small" style="top: 48%; left: 8%; animation-delay: 1.2s;"></div>
-      <div class="splash-particle" style="top: 58%; left: 92%; animation-delay: 1.5s;"></div>
-      <div class="splash-particle small" style="top: 68%; left: 18%; animation-delay: 1.8s;"></div>
-      <div class="splash-particle large" style="top: 78%; left: 72%; animation-delay: 2.1s;"></div>
-      <div class="splash-particle" style="top: 12%; left: 48%; animation-delay: 0.4s;"></div>
-      <div class="splash-particle small" style="top: 82%; left: 52%; animation-delay: 1.6s;"></div>
-      <div class="splash-particle large" style="top: 42%; left: 3%; animation-delay: 0.8s;"></div>
-      <div class="splash-particle" style="top: 52%; left: 97%; animation-delay: 1.4s;"></div>
-      <div class="splash-particle small" style="top: 5%; left: 35%; animation-delay: 0.5s;"></div>
-      <div class="splash-particle large" style="top: 90%; left: 38%; animation-delay: 1.9s;"></div>
-      <div class="splash-particle" style="top: 25%; left: 65%; animation-delay: 1.0s;"></div>
+      <div class="splash-particle large" style="top: 5%; left: 10%; animation-delay: 0s;"></div>
+      <div class="splash-particle" style="top: 12%; left: 75%; animation-delay: 0.3s;"></div>
+      <div class="splash-particle small" style="top: 22%; left: 20%; animation-delay: 0.6s;"></div>
+      <div class="splash-particle large" style="top: 32%; left: 85%; animation-delay: 0.9s;"></div>
+      <div class="splash-particle small" style="top: 42%; left: 5%; animation-delay: 1.2s;"></div>
+      <div class="splash-particle" style="top: 52%; left: 92%; animation-delay: 1.5s;"></div>
+      <div class="splash-particle small" style="top: 62%; left: 15%; animation-delay: 1.8s;"></div>
+      <div class="splash-particle large" style="top: 72%; left: 78%; animation-delay: 2.1s;"></div>
+      <div class="splash-particle" style="top: 8%; left: 45%; animation-delay: 0.4s;"></div>
+      <div class="splash-particle small" style="top: 82%; left: 55%; animation-delay: 1.6s;"></div>
+      <div class="splash-particle large" style="top: 38%; left: 2%; animation-delay: 0.8s;"></div>
+      <div class="splash-particle" style="top: 48%; left: 96%; animation-delay: 1.4s;"></div>
+      <div class="splash-particle small" style="top: 3%; left: 32%; animation-delay: 0.5s;"></div>
+      <div class="splash-particle large" style="top: 88%; left: 35%; animation-delay: 1.9s;"></div>
+      <div class="splash-particle" style="top: 28%; left: 68%; animation-delay: 1.0s;"></div>
 
       <!-- 拱形欢迎文字 -->
       <div class="splash-welcome-text" id="welcomeText">
@@ -903,17 +988,40 @@
         const chars = document.querySelectorAll('.welcome-char');
         const totalChars = chars.length;
 
-        // 拱形排列参数 - 适配屏幕宽度
-        const arcRadius = 240;
-        const startAngle = -Math.PI * 0.8;
-        const endAngle = -Math.PI * 0.2;
+        // 根据屏幕宽度自适应调整拱形参数
+        const screenWidth = window.innerWidth;
+        let arcRadius, startAngle, endAngle, xScale, yScale;
+
+        if (screenWidth <= 375) {
+          // 超小屏幕
+          arcRadius = 160;
+          startAngle = -Math.PI * 0.75;
+          endAngle = -Math.PI * 0.25;
+          xScale = 0.5;
+          yScale = 0.28;
+        } else if (screenWidth <= 768) {
+          // 小程序竖屏
+          arcRadius = 200;
+          startAngle = -Math.PI * 0.78;
+          endAngle = -Math.PI * 0.22;
+          xScale = 0.52;
+          yScale = 0.3;
+        } else {
+          // 桌面端
+          arcRadius = 240;
+          startAngle = -Math.PI * 0.8;
+          endAngle = -Math.PI * 0.2;
+          xScale = 0.55;
+          yScale = 0.3;
+        }
+
         const angleStep = (endAngle - startAngle) / (totalChars - 1);
 
         chars.forEach((char, index) => {
           // 计算拱形位置
           const angle = startAngle + angleStep * index;
-          const x = Math.cos(angle) * arcRadius * 0.55;
-          const y = Math.sin(angle) * arcRadius * 0.3;
+          const x = Math.cos(angle) * arcRadius * xScale;
+          const y = Math.sin(angle) * arcRadius * yScale;
           const rotation = angle * 0.18;
 
           // 设置初始位置和旋转
@@ -928,6 +1036,11 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
+        initWelcomeAnimation();
+      });
+
+      // 屏幕尺寸改变时重新计算拱形位置
+      window.addEventListener('resize', () => {
         initWelcomeAnimation();
       });
 
