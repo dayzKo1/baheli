@@ -391,10 +391,63 @@
         animation: welcomeTextFadeIn 1s ease-out 0.3s forwards;
       }
 
-      .splash-welcome-canvas {
-        width: 600px;
-        height: 120px;
-        filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.8));
+      .splash-welcome-text {
+        position: relative;
+        z-index: 2;
+        opacity: 0;
+        animation: welcomeTextFadeIn 1s ease-out 0.3s forwards;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 30px;
+      }
+
+      .welcome-char {
+        font-family: 'Ma Shan Zheng', 'ZCOOL KuaiLe', cursive;
+        font-size: 64px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #DAA520 0%, #FFD700 25%, #FFEC8B 50%, #FFD700 75%, #DAA520 100%);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 40px rgba(255, 215, 0, 0.5));
+        opacity: 0;
+        transform: translateY(30px) scale(0.5);
+        animation: charAppear 0.8s ease-out forwards, goldShimmer 3s ease-in-out infinite;
+        text-shadow: 0 2px 4px rgba(139, 90, 0, 0.3);
+        position: relative;
+      }
+
+      .welcome-char::before {
+        content: attr(data-char);
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+      }
+
+      @keyframes charAppear {
+        0% {
+          opacity: 0;
+          transform: translateY(30px) scale(0.5);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes goldShimmer {
+        0%, 100% {
+          background-position: 0% 50%;
+          filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 40px rgba(255, 215, 0, 0.5));
+        }
+        50% {
+          background-position: 100% 50%;
+          filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1)) drop-shadow(0 0 50px rgba(255, 215, 0, 0.7));
+        }
       }
 
       @keyframes welcomeTextFadeIn {
@@ -763,9 +816,14 @@
       <div class="splash-particle" style="top: 45%; left: 5%; animation-delay: 0.8s;"></div>
       <div class="splash-particle" style="top: 55%; left: 95%; animation-delay: 1.4s;"></div>
 
-      <!-- Canvas欢迎文字 -->
-      <div class="splash-welcome-text">
-        <canvas id="welcomeCanvas" class="splash-welcome-canvas"></canvas>
+      <!-- 拱形欢迎文字 -->
+      <div class="splash-welcome-text" id="welcomeText">
+        <span class="welcome-char" data-index="0">八</span>
+        <span class="welcome-char" data-index="1">合</span>
+        <span class="welcome-char" data-index="2">里</span>
+        <span class="welcome-char" data-index="3">欢</span>
+        <span class="welcome-char" data-index="4">迎</span>
+        <span class="welcome-char" data-index="5">您</span>
       </div>
 
       <div class="splash-logo-container">
