@@ -307,6 +307,8 @@
         width: 100vw;
         height: 100vh;
         background: 
+          radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%),
+          radial-gradient(circle at center, rgba(255, 200, 150, 0.12) 0%, rgba(180, 120, 80, 0.08) 30%, transparent 60%),
           linear-gradient(135deg, rgba(26, 15, 15, 0.75) 0%, rgba(45, 24, 16, 0.75) 25%, rgba(74, 40, 32, 0.75) 50%, rgba(107, 56, 48, 0.75) 75%, rgba(139, 64, 53, 0.75) 100%),
           url('bg.png');
         background-size: cover;
@@ -327,31 +329,19 @@
         0% {
           opacity: 0;
           background: 
+            radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%),
+            radial-gradient(circle at center, rgba(255, 200, 150, 0.15) 0%, rgba(180, 120, 80, 0.1) 30%, transparent 60%),
             linear-gradient(135deg, rgba(26, 15, 15, 1) 0%, rgba(45, 24, 16, 1) 25%, rgba(74, 40, 32, 1) 50%, rgba(107, 56, 48, 1) 75%, rgba(139, 64, 53, 1) 100%),
             url('bg.png');
         }
         100% {
           opacity: 1;
           background: 
+            radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%),
+            radial-gradient(circle at center, rgba(255, 200, 150, 0.12) 0%, rgba(180, 120, 80, 0.08) 30%, transparent 60%),
             linear-gradient(135deg, rgba(26, 15, 15, 0.75) 0%, rgba(45, 24, 16, 0.75) 25%, rgba(74, 40, 32, 0.75) 50%, rgba(107, 56, 48, 0.75) 75%, rgba(139, 64, 53, 0.75) 100%),
             url('bg.png');
         }
-      }
-
-      .splash-screen::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle at center, rgba(255, 200, 150, 0.08) 0%, rgba(180, 120, 80, 0.05) 30%, transparent 60%);
-        animation: rotateGlow 10s linear infinite;
-      }
-
-      @keyframes rotateGlow {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
       }
 
       .splash-screen.fade-out {
@@ -994,25 +984,25 @@
 
         if (screenWidth <= 375) {
           // 超小屏幕
-          arcRadius = 160;
-          startAngle = -Math.PI * 0.75;
-          endAngle = -Math.PI * 0.25;
-          xScale = 0.5;
-          yScale = 0.28;
+          arcRadius = 100;
+          startAngle = -Math.PI * 0.7;
+          endAngle = -Math.PI * 0.3;
+          xScale = 0.4;
+          yScale = 0.4;
         } else if (screenWidth <= 768) {
           // 小程序竖屏
-          arcRadius = 200;
-          startAngle = -Math.PI * 0.78;
-          endAngle = -Math.PI * 0.22;
-          xScale = 0.52;
-          yScale = 0.3;
+          arcRadius = 120;
+          startAngle = -Math.PI * 0.72;
+          endAngle = -Math.PI * 0.28;
+          xScale = 0.42;
+          yScale = 0.45;
         } else {
           // 桌面端
-          arcRadius = 240;
-          startAngle = -Math.PI * 0.8;
-          endAngle = -Math.PI * 0.2;
-          xScale = 0.55;
-          yScale = 0.3;
+          arcRadius = 140;
+          startAngle = -Math.PI * 0.75;
+          endAngle = -Math.PI * 0.25;
+          xScale = 0.45;
+          yScale = 0.5;
         }
 
         const angleStep = (endAngle - startAngle) / (totalChars - 1);
@@ -1022,7 +1012,7 @@
           const angle = startAngle + angleStep * index;
           const x = Math.cos(angle) * arcRadius * xScale;
           const y = Math.sin(angle) * arcRadius * yScale;
-          const rotation = angle * 0.18;
+          const rotation = angle * 0.12;
 
           // 设置初始位置和旋转
           char.style.setProperty('--char-x', `${x}px`);
