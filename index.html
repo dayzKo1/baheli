@@ -396,7 +396,7 @@
 
       .welcome-char {
         font-family: 'ZCOOL XiaoWei', 'Kaiti SC', 'STKaiti', '楷体', 'Noto Serif SC', serif;
-        font-size: 68px;
+        font-size: 78px;
         font-weight: 900;
         background: linear-gradient(135deg, 
           #B8860B 0%, 
@@ -420,7 +420,7 @@
         transform: translate(var(--char-x, 0), var(--char-y, 0)) translateY(30px) scale(0.5) rotate(var(--char-rotation, 0rad));
         animation: charAppear 0.8s ease-out forwards, goldShimmer 3s ease-in-out infinite;
         position: relative;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
       }
 
       .welcome-char::before {
@@ -838,7 +838,7 @@
         }
 
         .welcome-char {
-          font-size: 52px;
+          font-size: 60px;
         }
 
         .splash-particle.large {
@@ -990,25 +990,25 @@
 
         if (screenWidth <= 375) {
           // 超小屏幕
+          arcRadius = 85;
+          startAngle = -Math.PI * 0.68;
+          endAngle = -Math.PI * 0.32;
+          xScale = 0.35;
+          yScale = 0.35;
+        } else if (screenWidth <= 768) {
+          // 小程序竖屏
           arcRadius = 100;
           startAngle = -Math.PI * 0.7;
           endAngle = -Math.PI * 0.3;
-          xScale = 0.4;
+          xScale = 0.38;
           yScale = 0.4;
-        } else if (screenWidth <= 768) {
-          // 小程序竖屏
-          arcRadius = 120;
-          startAngle = -Math.PI * 0.72;
-          endAngle = -Math.PI * 0.28;
-          xScale = 0.42;
-          yScale = 0.45;
         } else {
           // 桌面端
-          arcRadius = 140;
-          startAngle = -Math.PI * 0.75;
-          endAngle = -Math.PI * 0.25;
-          xScale = 0.45;
-          yScale = 0.5;
+          arcRadius = 115;
+          startAngle = -Math.PI * 0.72;
+          endAngle = -Math.PI * 0.28;
+          xScale = 0.4;
+          yScale = 0.45;
         }
 
         const angleStep = (endAngle - startAngle) / (totalChars - 1);
@@ -1018,7 +1018,7 @@
           const angle = startAngle + angleStep * index;
           const x = Math.cos(angle) * arcRadius * xScale;
           const y = Math.sin(angle) * arcRadius * yScale;
-          const rotation = angle * 0.12;
+          const rotation = angle * 0.1;
 
           // 设置初始位置和旋转
           char.style.setProperty('--char-x', `${x}px`);
