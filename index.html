@@ -392,9 +392,9 @@
       }
 
       .splash-welcome-svg {
-        width: 380px;
-        height: 100px;
-        filter: drop-shadow(0 0 20px rgba(255, 140, 66, 1)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.8));
+        width: 480px;
+        height: 120px;
+        filter: drop-shadow(0 0 25px rgba(255, 215, 0, 1)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.8));
       }
 
       @keyframes welcomeTextFadeIn {
@@ -765,25 +765,25 @@
 
       <!-- 拱形欢迎文字（在Logo上方） -->
       <div class="splash-welcome-text">
-        <svg class="splash-welcome-svg" viewBox="0 0 380 100" xmlns="http://www.w3.org/2000/svg">
+        <svg class="splash-welcome-svg" viewBox="0 0 480 120" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <path id="welcomeArc" d="M 30 80 Q 190 -20 350 80" fill="none"/>
+            <path id="welcomeArc" d="M 40 95 Q 240 -25 440 95" fill="none"/>
             <linearGradient id="welcomeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color: #FF6B35; stop-opacity: 1" />
-              <stop offset="25%" style="stop-color: #FF8C42; stop-opacity: 1" />
-              <stop offset="50%" style="stop-color: #FFA726; stop-opacity: 1" />
-              <stop offset="75%" style="stop-color: #FF8C42; stop-opacity: 1" />
-              <stop offset="100%" style="stop-color: #FF6B35; stop-opacity: 1" />
+              <stop offset="0%" style="stop-color: #DAA520; stop-opacity: 1" />
+              <stop offset="25%" style="stop-color: #FFD700; stop-opacity: 1" />
+              <stop offset="50%" style="stop-color: #FFEC8B; stop-opacity: 1" />
+              <stop offset="75%" style="stop-color: #FFD700; stop-opacity: 1" />
+              <stop offset="100%" style="stop-color: #DAA520; stop-opacity: 1" />
             </linearGradient>
           </defs>
           <text
             font-family="'Ma Shan Zheng', 'ZCOOL KuaiLe', cursive"
-            font-size="38"
+            font-size="52"
             font-weight="bold"
             fill="url(#welcomeGradient)"
             letter-spacing="14"
-            stroke="rgba(139, 0, 0, 0.3)"
-            stroke-width="0.5"
+            stroke="rgba(139, 90, 0, 0.4)"
+            stroke-width="1"
           >
             <textPath href="#welcomeArc" startOffset="50%" text-anchor="middle">
               八合里欢迎您
