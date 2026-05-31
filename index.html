@@ -408,7 +408,6 @@
         justify-content: center;
         align-items: center;
         gap: 8px;
-        margin-bottom: 30px;
       }
 
       .welcome-char {
@@ -431,7 +430,6 @@
         filter: 
           drop-shadow(0 0 5px rgba(255, 215, 0, 0.3)) 
           drop-shadow(0 0 12px rgba(255, 215, 0, 0.2));
-        opacity: 0;
         transform: translate(var(--char-x, 0), var(--char-y, 0)) translateY(10px) scale(0.8) rotate(var(--char-rotation, 0rad));
         animation: charAppear 1.2s ease-out forwards, charShake 0.6s ease-in-out 1.3s forwards, goldShimmer 5s ease-in-out 1.9s infinite;
         position: relative;
@@ -990,7 +988,6 @@
 
         .splash-welcome-text {
           gap: 4px;
-          margin-bottom: 24px;
         }
 
         .main-title {
@@ -2002,7 +1999,7 @@
             // 动画结束后初始化Canvas
             initCowCanvas();
           }, 1500);
-        }, 2800);
+        }, 4500);
       }
 
       /**
