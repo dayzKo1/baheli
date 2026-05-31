@@ -828,17 +828,17 @@
         }
 
         .splash-logo-container {
-          width: 280px;
-          height: 280px;
+          width: 320px;
+          height: 320px;
         }
 
         .splash-welcome-text {
-          gap: 6px;
-          margin-bottom: 25px;
+          gap: 5px;
+          margin-bottom: 28px;
         }
 
         .welcome-char {
-          font-size: 60px;
+          font-size: 68px;
         }
 
         .splash-particle.large {
@@ -990,25 +990,25 @@
 
         if (screenWidth <= 375) {
           // 超小屏幕
-          arcRadius = 85;
+          arcRadius = 80;
+          startAngle = -Math.PI * 0.65;
+          endAngle = -Math.PI * 0.35;
+          xScale = 0.32;
+          yScale = 0.55;
+        } else if (screenWidth <= 768) {
+          // 小程序竖屏
+          arcRadius = 95;
           startAngle = -Math.PI * 0.68;
           endAngle = -Math.PI * 0.32;
           xScale = 0.35;
-          yScale = 0.35;
-        } else if (screenWidth <= 768) {
-          // 小程序竖屏
-          arcRadius = 100;
+          yScale = 0.6;
+        } else {
+          // 桌面端
+          arcRadius = 110;
           startAngle = -Math.PI * 0.7;
           endAngle = -Math.PI * 0.3;
           xScale = 0.38;
-          yScale = 0.4;
-        } else {
-          // 桌面端
-          arcRadius = 115;
-          startAngle = -Math.PI * 0.72;
-          endAngle = -Math.PI * 0.28;
-          xScale = 0.4;
-          yScale = 0.45;
+          yScale = 0.65;
         }
 
         const angleStep = (endAngle - startAngle) / (totalChars - 1);
@@ -1018,7 +1018,7 @@
           const angle = startAngle + angleStep * index;
           const x = Math.cos(angle) * arcRadius * xScale;
           const y = Math.sin(angle) * arcRadius * yScale;
-          const rotation = angle * 0.1;
+          const rotation = angle * 0.08;
 
           // 设置初始位置和旋转
           char.style.setProperty('--char-x', `${x}px`);
