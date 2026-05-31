@@ -337,8 +337,18 @@
         pointer-events: none;
       }
 
-      .splash-screen.fade-out .splash-welcome-text,
-      .splash-screen.fade-out .welcome-char,
+      .splash-screen.fade-out .splash-welcome-text {
+        opacity: 0;
+        transform: scale(0.95);
+        animation: none !important;
+      }
+
+      .splash-screen.fade-out .welcome-char {
+        opacity: 0;
+        transform: translate(var(--char-x, 0), var(--char-y, 0)) scale(0.95) rotate(var(--char-rotation, 0rad));
+        animation: none !important;
+      }
+
       .splash-screen.fade-out .splash-logo-container,
       .splash-screen.fade-out .splash-particle {
         opacity: 0;
@@ -388,6 +398,7 @@
       .splash-screen.fade-out .splash-logo-image {
         opacity: 0;
         transform: scale(0.95);
+        animation: none !important;
       }
 
       @keyframes logoGlow {
