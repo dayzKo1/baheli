@@ -417,8 +417,8 @@
           drop-shadow(0 0 40px rgba(255, 215, 0, 0.6))
           drop-shadow(0 0 60px rgba(255, 215, 0, 0.4));
         opacity: 0;
-        transform: translate(var(--char-x, 0), var(--char-y, 0)) translateY(30px) scale(0.5) rotate(var(--char-rotation, 0rad));
-        animation: charAppear 0.8s ease-out forwards, goldShimmer 3s ease-in-out infinite;
+        transform: translate(var(--char-x, 0), var(--char-y, 0)) translateY(15px) scale(0.85) rotate(var(--char-rotation, 0rad));
+        animation: charAppear 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, goldShimmer 3s ease-in-out infinite;
         position: relative;
         letter-spacing: 0px;
       }
@@ -434,7 +434,11 @@
       @keyframes charAppear {
         0% {
           opacity: 0;
-          transform: translate(var(--char-x, 0), var(--char-y, 0)) translateY(30px) scale(0.5) rotate(var(--char-rotation, 0rad));
+          transform: translate(var(--char-x, 0), var(--char-y, 0)) translateY(15px) scale(0.85) rotate(var(--char-rotation, 0rad));
+        }
+        60% {
+          opacity: 1;
+          transform: translate(var(--char-x, 0), var(--char-y, 0)) translateY(-3px) scale(1.02) rotate(var(--char-rotation, 0rad));
         }
         100% {
           opacity: 1;
@@ -990,25 +994,25 @@
 
         if (screenWidth <= 375) {
           // 超小屏幕
-          arcRadius = 30;
-          startAngle = -Math.PI * 0.85;
-          endAngle = -Math.PI * 0.15;
-          xScale = 0.28;
-          yScale = 1.2;
+          arcRadius = 20;
+          startAngle = -Math.PI * 0.93;
+          endAngle = -Math.PI * 0.07;
+          xScale = 0.2;
+          yScale = 1.6;
         } else if (screenWidth <= 768) {
           // 小程序竖屏
-          arcRadius = 38;
-          startAngle = -Math.PI * 0.88;
-          endAngle = -Math.PI * 0.12;
-          xScale = 0.3;
-          yScale = 1.3;
+          arcRadius = 25;
+          startAngle = -Math.PI * 0.94;
+          endAngle = -Math.PI * 0.06;
+          xScale = 0.22;
+          yScale = 1.7;
         } else {
           // 桌面端
-          arcRadius = 45;
-          startAngle = -Math.PI * 0.9;
-          endAngle = -Math.PI * 0.1;
-          xScale = 0.32;
-          yScale = 1.4;
+          arcRadius = 30;
+          startAngle = -Math.PI * 0.95;
+          endAngle = -Math.PI * 0.05;
+          xScale = 0.24;
+          yScale = 1.8;
         }
 
         const angleStep = (endAngle - startAngle) / (totalChars - 1);
@@ -1026,8 +1030,8 @@
           char.style.setProperty('--char-rotation', `${rotation}rad`);
 
           // 延迟出现动画
-          const delay = index * 0.12;
-          char.style.animationDelay = `${delay}s, ${delay + 0.8}s`;
+          const delay = index * 0.15;
+          char.style.animationDelay = `${delay}s, ${delay + 1.2}s`;
         });
       }
 
