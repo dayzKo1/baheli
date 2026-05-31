@@ -317,9 +317,25 @@
         justify-content: center;
         align-items: center;
         z-index: 9999;
-        opacity: 1;
+        opacity: 0;
+        animation: bgFadeIn 1.5s ease-out forwards;
         transition: opacity 0.8s ease-out;
         overflow: hidden;
+      }
+
+      @keyframes bgFadeIn {
+        0% {
+          opacity: 0;
+          background: 
+            linear-gradient(135deg, rgba(26, 15, 15, 1) 0%, rgba(45, 24, 16, 1) 25%, rgba(74, 40, 32, 1) 50%, rgba(107, 56, 48, 1) 75%, rgba(139, 64, 53, 1) 100%),
+            url('bg.png');
+        }
+        100% {
+          opacity: 1;
+          background: 
+            linear-gradient(135deg, rgba(26, 15, 15, 0.75) 0%, rgba(45, 24, 16, 0.75) 25%, rgba(74, 40, 32, 0.75) 50%, rgba(107, 56, 48, 0.75) 75%, rgba(139, 64, 53, 0.75) 100%),
+            url('bg.png');
+        }
       }
 
       .splash-screen::before {
@@ -463,13 +479,25 @@
       /* 装饰粒子 */
       .splash-particle {
         position: absolute;
-        width: 6px;
-        height: 6px;
-        background: radial-gradient(circle, #FF8C42 0%, #FF6B35 40%, transparent 70%);
+        width: 8px;
+        height: 8px;
+        background: radial-gradient(circle, #FFD700 0%, #FFA500 40%, transparent 70%);
         border-radius: 50%;
         animation: particleFloat 4s ease-in-out infinite;
         z-index: 1;
-        box-shadow: 0 0 10px rgba(255, 140, 66, 0.6);
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 165, 0, 0.4);
+      }
+
+      .splash-particle.large {
+        width: 12px;
+        height: 12px;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 1), 0 0 40px rgba(255, 165, 0, 0.6);
+      }
+
+      .splash-particle.small {
+        width: 5px;
+        height: 5px;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
       }
 
       @keyframes particleFloat {
@@ -802,18 +830,21 @@
     <!-- 开场动画 -->
     <div class="splash-screen" id="splashScreen">
       <!-- 装饰粒子 -->
-      <div class="splash-particle" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
-      <div class="splash-particle" style="top: 20%; left: 80%; animation-delay: 0.3s;"></div>
-      <div class="splash-particle" style="top: 30%; left: 25%; animation-delay: 0.6s;"></div>
-      <div class="splash-particle" style="top: 40%; left: 85%; animation-delay: 0.9s;"></div>
-      <div class="splash-particle" style="top: 50%; left: 10%; animation-delay: 1.2s;"></div>
-      <div class="splash-particle" style="top: 60%; left: 90%; animation-delay: 1.5s;"></div>
-      <div class="splash-particle" style="top: 70%; left: 20%; animation-delay: 1.8s;"></div>
-      <div class="splash-particle" style="top: 80%; left: 75%; animation-delay: 2.1s;"></div>
-      <div class="splash-particle" style="top: 15%; left: 50%; animation-delay: 0.4s;"></div>
-      <div class="splash-particle" style="top: 85%; left: 50%; animation-delay: 1.6s;"></div>
-      <div class="splash-particle" style="top: 45%; left: 5%; animation-delay: 0.8s;"></div>
-      <div class="splash-particle" style="top: 55%; left: 95%; animation-delay: 1.4s;"></div>
+      <div class="splash-particle large" style="top: 8%; left: 12%; animation-delay: 0s;"></div>
+      <div class="splash-particle" style="top: 18%; left: 78%; animation-delay: 0.3s;"></div>
+      <div class="splash-particle small" style="top: 28%; left: 22%; animation-delay: 0.6s;"></div>
+      <div class="splash-particle large" style="top: 38%; left: 88%; animation-delay: 0.9s;"></div>
+      <div class="splash-particle small" style="top: 48%; left: 8%; animation-delay: 1.2s;"></div>
+      <div class="splash-particle" style="top: 58%; left: 92%; animation-delay: 1.5s;"></div>
+      <div class="splash-particle small" style="top: 68%; left: 18%; animation-delay: 1.8s;"></div>
+      <div class="splash-particle large" style="top: 78%; left: 72%; animation-delay: 2.1s;"></div>
+      <div class="splash-particle" style="top: 12%; left: 48%; animation-delay: 0.4s;"></div>
+      <div class="splash-particle small" style="top: 82%; left: 52%; animation-delay: 1.6s;"></div>
+      <div class="splash-particle large" style="top: 42%; left: 3%; animation-delay: 0.8s;"></div>
+      <div class="splash-particle" style="top: 52%; left: 97%; animation-delay: 1.4s;"></div>
+      <div class="splash-particle small" style="top: 5%; left: 35%; animation-delay: 0.5s;"></div>
+      <div class="splash-particle large" style="top: 90%; left: 38%; animation-delay: 1.9s;"></div>
+      <div class="splash-particle" style="top: 25%; left: 65%; animation-delay: 1.0s;"></div>
 
       <!-- 拱形欢迎文字 -->
       <div class="splash-welcome-text" id="welcomeText">
@@ -872,18 +903,18 @@
         const chars = document.querySelectorAll('.welcome-char');
         const totalChars = chars.length;
 
-        // 拱形排列参数
-        const arcRadius = 280;
-        const startAngle = -Math.PI * 0.7;
-        const endAngle = -Math.PI * 0.3;
+        // 拱形排列参数 - 适配屏幕宽度
+        const arcRadius = 240;
+        const startAngle = -Math.PI * 0.8;
+        const endAngle = -Math.PI * 0.2;
         const angleStep = (endAngle - startAngle) / (totalChars - 1);
 
         chars.forEach((char, index) => {
           // 计算拱形位置
           const angle = startAngle + angleStep * index;
-          const x = Math.cos(angle) * arcRadius * 0.5;
-          const y = Math.sin(angle) * arcRadius * 0.25;
-          const rotation = angle * 0.15;
+          const x = Math.cos(angle) * arcRadius * 0.55;
+          const y = Math.sin(angle) * arcRadius * 0.3;
+          const rotation = angle * 0.18;
 
           // 设置初始位置和旋转
           char.style.setProperty('--char-x', `${x}px`);
