@@ -811,6 +811,174 @@
 
     <script>
       /**
+       * Canvas酷炫金色欢迎文字渲染器
+       * 支持渐变、发光、流动动画、拱形排列等特效
+       */
+      class WelcomeTextRenderer {
+        constructor(canvasId) {
+          this.canvas = document.getElementById(canvasId);
+          this.ctx = this.canvas.getContext('2d');
+          this.animationFrame = 0;
+          this.animationId = null;
+          this.appearProgress = 0;
+          this.isAppearing = true;
+
+          this.init();
+        }
+
+        /**
+         * 初始化Canvas并启动动画
+         */
+        init() {
+          this.resize();
+          window.addEventListener('resize', () => this.resize());
+          this.startAnimation();
+        }
+
+        /**
+         * 调整Canvas尺寸以适应容器
+         */
+        resize() {
+          const dpr = window.devicePixelRatio || 1;
+
+          this.canvas.width = 600 * dpr;
+          this.canvas.height = 140 * dpr;
+          this.canvas.style.width = '600px';
+          this.canvas.style.height = '140px';
+
+          this.ctx.scale(dpr, dpr);
+          this.width = 600;
+          this.height = 140;
+        }
+
+        /**
+         * 缓动函数 - 平滑出现效果
+         */
+        easeOutCubic(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+
+        /**
+         * 绘制带特效的金色拱形文字
+         */
+        draw() {
+          const ctx = this.ctx;
+          ctx.clearRect(0, 0, this.width, this.height);
+
+          const text = '八合里欢迎您';
+          const chars = text.split('');
+          const fontSize = 58;
+
+          ctx.font = `bold ${fontSize}px "Ma Shan Zheng", "ZCOOL KuaiLe", cursive`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          const centerX = this.width / 2;
+          const centerY = this.height / 2 + 10;
+          const arcRadius = 220;
+          const startAngle = -Math.PI * 0.75;
+          const endAngle = -Math.PI * 0.25;
+          const angleStep = (endAngle - startAngle) / (chars.length - 1);
+
+          // 出现动画进度
+          if (this.isAppearing && this.appearProgress < 1) {
+            this.appearProgress += 0.015;
+            if (this.appearProgress >= 1) {
+              this.appearProgress = 1;
+              this.isAppearing = false;
+            }
+          }
+
+          const easedProgress = this.easeOutCubic(this.appearProgress);
+
+          // 绘制每个字符（拱形排列）
+          chars.forEach((char, index) => {
+            const angle = startAngle + angleStep * index;
+            const x = centerX + Math.cos(angle) * arcRadius;
+            const y = centerY + Math.sin(angle) * arcRadius * 0.4;
+
+            // 字符延迟出现效果
+            const charDelay = index * 0.12;
+            const charProgress = Math.max(0, Math.min(1, (easedProgress - charDelay) / (1 - charDelay)));
+            const charEased = this.easeOutCubic(charProgress);
+
+            if (charEased <= 0) return;
+
+            ctx.save();
+
+            // 缩放和透明度动画
+            const scale = charEased;
+            ctx.globalAlpha = charEased;
+            ctx.translate(x, y);
+            ctx.scale(scale, scale);
+            ctx.rotate((angle + Math.PI / 2) * 0.15);
+
+            // 多层发光效果
+            for (let i = 3; i >= 0; i--) {
+              ctx.save();
+              ctx.shadowColor = `rgba(255, 215, 0, ${0.8 - i * 0.15})`;
+              ctx.shadowBlur = 20 + i * 15;
+
+              // 金色渐变（带流动效果）
+              const gradient = ctx.createLinearGradient(-40, 0, 40, 0);
+              const flowOffset = (Math.sin(this.animationFrame * 0.03 + index * 0.5) + 1) / 2 * 0.15;
+
+              gradient.addColorStop(0, '#DAA520');
+              gradient.addColorStop(Math.max(0, 0.25 - flowOffset), '#FFD700');
+              gradient.addColorStop(0.5, '#FFEC8B');
+              gradient.addColorStop(Math.min(1, 0.75 + flowOffset), '#FFD700');
+              gradient.addColorStop(1, '#DAA520');
+
+              ctx.fillStyle = gradient;
+              ctx.fillText(char, 0, 0);
+              ctx.restore();
+            }
+
+            // 描边增强立体感
+            ctx.strokeStyle = 'rgba(139, 90, 0, 0.4)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeText(char, 0, 0);
+
+            ctx.restore();
+          });
+        }
+
+        /**
+         * 动画循环
+         */
+        animate() {
+          this.animationFrame++;
+          this.draw();
+          this.animationId = requestAnimationFrame(() => this.animate());
+        }
+
+        /**
+         * 启动动画
+         */
+        startAnimation() {
+          if (!this.animationId) {
+            this.animate();
+          }
+        }
+
+        /**
+         * 停止动画
+         */
+        stopAnimation() {
+          if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+          }
+        }
+      }
+
+      /** 初始化欢迎文字 */
+      let welcomeRenderer = null;
+      document.addEventListener('DOMContentLoaded', () => {
+        welcomeRenderer = new WelcomeTextRenderer('welcomeCanvas');
+      });
+
+      /**
        * Canvas部位图渲染引擎
        * 支持缩放、拖拽、高亮等功能
        */
