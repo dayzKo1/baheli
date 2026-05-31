@@ -2009,6 +2009,35 @@
         const mainContent = document.getElementById('mainContent');
 
         setTimeout(function() {
+          // 停止所有动画，让过渡效果生效
+          splashScreen.style.animation = 'none';
+          
+          const chars = document.querySelectorAll('.welcome-char');
+          chars.forEach(function(char) {
+            char.style.animation = 'none';
+          });
+          
+          const logoContainer = document.querySelector('.splash-logo-container');
+          if (logoContainer) {
+            logoContainer.style.animation = 'none';
+          }
+          
+          const logoImage = document.querySelector('.splash-logo-image');
+          if (logoImage) {
+            logoImage.style.animation = 'none';
+          }
+          
+          const particles = document.querySelectorAll('.splash-particle');
+          particles.forEach(function(particle) {
+            particle.style.animation = 'none';
+          });
+          
+          const welcomeText = document.querySelector('.splash-welcome-text');
+          if (welcomeText) {
+            welcomeText.style.animation = 'none';
+          }
+          
+          // 添加fade-out类触发过渡
           splashScreen.classList.add('fade-out');
           mainContent.classList.add('visible');
 
