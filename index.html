@@ -938,6 +938,31 @@
           display: none;
         }
       }
+
+      /* 小屏幕优化（375-430px） */
+      @media screen and (min-width: 376px) and (max-width: 430px) {
+        .splash-logo-container {
+          width: 290px;
+          height: 290px;
+        }
+
+        .welcome-char {
+          font-size: 58px;
+        }
+
+        .splash-welcome-text {
+          gap: 4px;
+          margin-bottom: 24px;
+        }
+
+        .main-title {
+          font-size: 24px;
+        }
+
+        .main-subtitle {
+          font-size: 17px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1028,6 +1053,13 @@
           endAngle = -Math.PI * 0.07;
           xScale = 0.2;
           yScale = 1.6;
+        } else if (screenWidth <= 430) {
+          // 小屏幕（375-430）
+          arcRadius = 22;
+          startAngle = -Math.PI * 0.94;
+          endAngle = -Math.PI * 0.06;
+          xScale = 0.14;
+          yScale = 1.8;
         } else if (screenWidth <= 768) {
           // 小程序竖屏
           arcRadius = 18;
