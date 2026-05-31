@@ -316,7 +316,7 @@
         z-index: 9999;
         opacity: 0;
         animation: bgFadeIn 1.5s ease-out forwards;
-        transition: opacity 0.8s ease-out;
+        transition: opacity 1.5s ease-in-out;
         overflow: hidden;
       }
 
@@ -334,12 +334,26 @@
         pointer-events: none;
       }
 
+      .splash-screen.fade-out .splash-welcome-text,
+      .splash-screen.fade-out .welcome-char,
+      .splash-screen.fade-out .splash-logo-container,
+      .splash-screen.fade-out .splash-particle {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      .splash-welcome-text,
+      .welcome-char,
+      .splash-logo-container,
+      .splash-particle {
+        transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+      }
+
       .splash-logo-container {
         position: relative;
         width: 380px;
         height: 380px;
         animation: logoAppear 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-        transform: scale(0);
         z-index: 2;
       }
 
@@ -364,6 +378,11 @@
         object-fit: contain;
         filter: drop-shadow(0 0 40px rgba(255, 140, 66, 0.8)) drop-shadow(0 0 80px rgba(255, 100, 50, 0.5));
         animation: logoGlow 2s ease-in-out infinite;
+        transition: opacity 1.2s ease-in-out;
+      }
+
+      .splash-screen.fade-out .splash-logo-image {
+        opacity: 0;
       }
 
       @keyframes logoGlow {
@@ -1912,7 +1931,7 @@
             
             // 动画结束后初始化Canvas
             initCowCanvas();
-          }, 800);
+          }, 1500);
         }, 2800);
       }
 
